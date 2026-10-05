@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#4f46e5" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="やることリスト" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="apple-touch-icon" href="./icons/icon-192.svg" />
+    <title>やることリスト</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --text: #223043;
+        --muted: #6b7a90;
+        --accent: #4f46e5;
+        --accent-soft: #eef2ff;
+        --border: #dfe7f2;
+        --done: #8fa2b8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, #eef2ff, var(--bg));
+        color: var(--text);
+        padding: max(20px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .app {
+        width: min(680px, 100%);
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        box-shadow: 0 20px 40px rgba(79, 70, 229, 0.12);
+        padding: 28px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .points-badge {
+        background: #fff7ed;
+        color: #c2410c;
+        border: 1px solid #fdba74;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .points-badge:hover {
+        transform: translateY(-1px);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.8rem;
+      }
+
+      .subtitle {
+        margin: 0 0 20px;
+        color: var(--muted);
+      }
+
+      form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+      }
+
+      input[type="text"], input[type="number"], select {
+        flex: 1;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        font-size: 1rem;
+        outline: none;
+      }
+
+      input[type="text"]:focus, input[type="number"]:focus, select:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14);
+      }
+
+      select {
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: white;
+        color: var(--text);
+        min-width: 130px;
+      }
+
+      .points-input {
+        max-width: 92px;
+      }
+
+      button {
+        border: none;
+        border-radius: 12px;
+        padding: 12px 14px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        touch-action: manipulation;
+        min-height: 44px;
+      }
+
+      .primary {
+        background: var(--accent);
+        color: white;
+      }
+
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+
+      .filters {
+        display: flex;
+        gap: 8px;
+      }
+
+      .filter-btn {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      .filter-btn.active {
+        background: var(--accent);
+        color: white;
+      }
+
+      .summary {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 10px;
+      }
+
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        background: #fbfcff;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+      }
+
+      li.done .item-text {
+        color: var(--done);
+        text-decoration: line-through;
+      }
+
+      .left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+      }
+
+      .checkbox {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--accent);
+      }
+
+      .task-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .task-main {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .item-text {
+        font-size: 1rem;
+        word-break: break-word;
+      }
+
+      .category-badge {
+        display: inline-block;
+        width: fit-content;
+        font-size: 0.8rem;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border-radius: 999px;
+        padding: 2px 8px;
+      }
+
+      .points-pill {
+        display: inline-block;
+        font-size: 0.8rem;
+        color: #b45309;
+        background: #ffedd5;
+        border-radius: 999px;
+        padding: 2px 8px;
+        font-weight: 700;
+      }
+
+      .delete-btn {
+        background: transparent;
+        color: #c2410c;
+        padding: 6px 8px;
+      }
+
+      .section {
+        margin-bottom: 12px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 10px;
+        background: #fcfdff;
+      }
+
+      .section-title {
+        font-weight: 700;
+        margin: 0 0 8px;
+        color: var(--accent);
+        font-size: 0.95rem;
+      }
+
+      .section ul {
+        gap: 8px;
+      }
+
+      .footer {
+        margin-top: 16px;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .secondary {
+        background: #f1f5f9;
+        color: #334155;
+      }
+
+      .empty {
+        padding: 24px;
+        text-align: center;
+        color: var(--muted);
+        background: #fbfcff;
+        border: 1px dashed var(--border);
+        border-radius: 14px;
+      }
+
+      .history-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.3);
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        z-index: 20;
+      }
+
+      .history-modal.hidden {
+        display: none;
+      }
+
+      .history-card {
+        width: min(560px, 100%);
+        max-height: 80vh;
+        overflow: auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+        padding: 18px;
+      }
+
+      .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .history-header h2 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .history-actions {
+        margin-bottom: 10px;
+      }
+
+      .history-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .history-day {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+        background: #f9fbff;
+      }
+
+      .history-day-title {
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: var(--accent);
+      }
+
+      .history-group {
+        display: grid;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+
+      .history-group-title {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      .history-entry {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 0.95rem;
+      }
+
+      .history-entry .gain {
+        color: #166534;
+      }
+
+      .history-entry .spend {
+        color: #b91c1c;
+      }
+
+      @media (max-width: 560px) {
+        .app {
+          padding: 20px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        form {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <div class="topbar">
+        <div>
+          <h1>📝 やることリスト</h1>
+          <p class="subtitle">家事や勉強をカテゴリで整理して、達成するとポイントをためよう。</p>
+        </div>
+        <button id="points-badge" class="points-badge" type="button" aria-expanded="false">ポイント: 0pt</button>
+      </div>
+
+      <div id="history-modal" class="history-modal hidden" role="dialog" aria-modal="true" aria-label="ポイント履歴">
+        <div class="history-card">
+          <div class="history-header">
+            <h2>ポイント履歴</h2>
+            <button id="close-history" class="secondary" type="button">閉じる</button>
+          </div>
+          <div class="history-actions">
+            <button id="spend-points" class="secondary" type="button">10ptを消費</button>
+          </div>
+          <div id="history-list" class="history-list"></div>
+        </div>
+      </div>
+
+      <form id="item-form">
+        <input id="item-input" type="text" maxlength="40" placeholder="例: 宿題をする" autocomplete="off" autocapitalize="off" inputmode="text" />
+        <select id="saved-task-select" aria-label="登録済みタスク">
+          <option value="">登録済みから選択</option>
+        </select>
+        <input id="points-input" class="points-input" type="number" min="1" max="100" value="10" aria-label="ポイント" />
+        <select id="category-select" aria-label="カテゴリ">
+          <option value="家事">家事</option>
+          <option value="算数">算数</option>
+          <option value="国語">国語</option>
+          <option value="社会">社会</option>
+          <option value="理科">理科</option>
+          <option value="音楽">音楽</option>
+          <option value="運動">運動</option>
+        </select>
+        <button class="primary" type="submit">追加</button>
+      </form>
+
+      <div class="toolbar">
+        <div id="summary" class="summary">0件 / 0件残り</div>
+        <div class="filters" role="tablist" aria-label="絞り込み">
+          <button class="filter-btn active" data-filter="all" type="button">すべて</button>
+          <button class="filter-btn" data-filter="active" type="button">未完了</button>
+          <button class="filter-btn" data-filter="completed" type="button">完了済み</button>
+        </div>
+      </div>
+
+      <ul id="item-list" aria-live="polite"></ul>
+
+      <div class="footer" style="gap: 10px; flex-wrap: wrap;">
+        <button id="share-url" class="secondary" type="button">共有URLを作る</button>
+        <button id="clear-completed" class="secondary" type="button">完了済みを削除</button>
+      </div>
+    </main>
+
+    <script>
+      const STORAGE_KEY = "task-list-items-v3";
+      const HISTORY_KEY = "task-point-history-v1";
+      const TEMPLATES_KEY = "task-templates-v1";
+      const DEFAULT_POINTS = 10;
+      let items = loadItems();
+      let history = loadHistory();
+      let templates = loadTemplates();
+      let currentFilter = "all";
+
+      const form = document.getElementById("item-form");
+      const input = document.getElementById("item-input");
+      const savedTaskSelect = document.getElementById("saved-task-select");
+      const pointsInput = document.getElementById("points-input");
+      const categorySelect = document.getElementById("category-select");
+      const list = document.getElementById("item-list");
+      const summary = document.getElementById("summary");
+      const pointsBadge = document.getElementById("points-badge");
+      const historyModal = document.getElementById("history-modal");
+      const historyList = document.getElementById("history-list");
+      const closeHistoryButton = document.getElementById("close-history");
+      const spendPointsButton = document.getElementById("spend-points");
+      const clearCompletedButton = document.getElementById("clear-completed");
+      const shareUrlButton = document.getElementById("share-url");
+      const filterButtons = Array.from(document.querySelectorAll(".filter-btn"));
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = input.value.trim();
+        if (!name) {
+          input.focus();
+          return;
+        }
+
+        const category = categorySelect.value;
+        const points = Number(pointsInput.value) || DEFAULT_POINTS;
+        items.unshift({ id: Date.now(), name, category, points, completed: false, rewarded: false });
+        addTemplate(name, category, points);
+        saveItems();
+        saveTemplates();
+        input.value = "";
+        pointsInput.value = DEFAULT_POINTS;
+        categorySelect.value = "家事";
+        savedTaskSelect.value = "";
+        render();
+        input.focus();
+      });
+
+      list.addEventListener("change", (event) => {
+        const checkbox = event.target.closest("input[type='checkbox']");
+        if (!checkbox) return;
+
+        const id = Number(checkbox.dataset.id);
+        items = items.map((item) => {
+          if (item.id !== id) {
+            return item;
+          }
+
+          const isCompleted = checkbox.checked;
+          if (isCompleted && !item.completed) {
+            addHistoryEntry({
+              id: Date.now() + Math.random(),
+              type: "gain",
+              amount: Number(item.points) || DEFAULT_POINTS,
+              label: item.name,
+              createdAt: Date.now(),
+            });
+          }
+
+          return {
+            ...item,
+            completed: isCompleted,
+            rewarded: isCompleted ? true : item.rewarded,
+          };
+        });
+        saveItems();
+        saveHistory();
+        render();
+      });
+
+      list.addEventListener("click", (event) => {
+        const deleteButton = event.target.closest("button[data-delete-id]");
+        if (!deleteButton) return;
+
+        const id = Number(deleteButton.dataset.deleteId);
+        items = items.filter((item) => item.id !== id);
+        saveItems();
+        render();
+      });
+
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          currentFilter = button.dataset.filter;
+          filterButtons.forEach((btn) => btn.classList.toggle("active", btn === button));
+          render();
+        });
+      });
+
+      clearCompletedButton.addEventListener("click", () => {
+        items = items.filter((item) => !item.completed);
+        saveItems();
+        render();
+      });
+
+      shareUrlButton.addEventListener("click", async () => {
+        const shareUrl = buildShareUrl(items);
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          window.alert("共有URLをコピーしました。別の端末で開いてください。");
+        } catch (error) {
+          window.prompt("共有URLをコピーしてください。", shareUrl);
+        }
+      });
+
+      pointsBadge.addEventListener("click", () => {
+        historyModal.classList.toggle("hidden");
+        pointsBadge.setAttribute("aria-expanded", String(!historyModal.classList.contains("hidden")));
+        renderHistory();
+      });
+
+      closeHistoryButton.addEventListener("click", () => {
+        historyModal.classList.add("hidden");
+        pointsBadge.setAttribute("aria-expanded", "false");
+      });
+
+      historyModal.addEventListener("click", (event) => {
+        if (event.target === historyModal) {
+          historyModal.classList.add("hidden");
+          pointsBadge.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      spendPointsButton.addEventListener("click", () => {
+        addHistoryEntry({
+          id: Date.now() + Math.random(),
+          type: "spend",
+          amount: 10,
+          label: "消費",
+          createdAt: Date.now(),
+        });
+        saveHistory();
+        renderHistory();
+        render();
+      });
+
+      savedTaskSelect.addEventListener("change", () => {
+        const selectedId = savedTaskSelect.value;
+        const selectedTemplate = templates.find((template) => String(template.id) === selectedId);
+        if (!selectedTemplate) {
+          return;
+        }
+
+        input.value = selectedTemplate.name;
+        pointsInput.value = selectedTemplate.points || DEFAULT_POINTS;
+        categorySelect.value = selectedTemplate.category || "家事";
+      });
+
+      function loadItems() {
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          return normalizeItems(stored ? JSON.parse(stored) : []);
+        } catch (error) {
+          console.warn("保存済みのデータを読み込めませんでした。", error);
+          return [];
+        }
+      }
+
+      function saveItems() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeItems(items)));
+      }
+
+      function loadHistory() {
+        try {
+          const stored = localStorage.getItem(HISTORY_KEY);
+          return normalizeHistory(stored ? JSON.parse(stored) : []);
+        } catch (error) {
+          console.warn("ポイント履歴を読み込めませんでした。", error);
+          return [];
+        }
+      }
+
+      function saveHistory() {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+      }
+
+      function loadTemplates() {
+        try {
+          const stored = localStorage.getItem(TEMPLATES_KEY);
+          return normalizeTemplates(stored ? JSON.parse(stored) : []);
+        } catch (error) {
+          console.warn("登録済みタスクを読み込めませんでした。", error);
+          return [];
+        }
+      }
+
+      function saveTemplates() {
+        localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates));
+      }
+
+      function normalizeItems(source) {
+        return (Array.isArray(source) ? source : [])
+          .map((item, index) => {
+            if (typeof item === "string") {
+              return { id: Date.now() + index, name: item, category: "家事", points: DEFAULT_POINTS, completed: false, rewarded: false };
+            }
+
+            return {
+              id: item.id ?? Date.now() + index,
+              name: item.name ?? "",
+              category: item.category ?? "家事",
+              points: Number(item.points) || DEFAULT_POINTS,
+              completed: Boolean(item.completed),
+              rewarded: item.rewarded ?? Boolean(item.completed),
+            };
+          })
+          .filter((item) => item.name);
+      }
+
+      function normalizeHistory(source) {
+        return (Array.isArray(source) ? source : []).map((entry) => ({
+          id: entry.id ?? Date.now(),
+          type: entry.type === "spend" ? "spend" : "gain",
+          amount: Number(entry.amount) || 0,
+          label: entry.label ?? "",
+          createdAt: entry.createdAt ?? Date.now(),
+        }));
+      }
+
+      function normalizeTemplates(source) {
+        return (Array.isArray(source) ? source : [])
+          .map((template, index) => ({
+            id: template.id ?? Date.now() + index,
+            name: template.name ?? "",
+            category: template.category ?? "家事",
+            points: Number(template.points) || DEFAULT_POINTS,
+          }))
+          .filter((template) => template.name);
+      }
+
+      function addTemplate(name, category, points) {
+        const trimmedName = name.trim();
+        if (!trimmedName) return;
+
+        const duplicate = templates.find((template) => template.name === trimmedName);
+        if (duplicate) {
+          duplicate.category = category;
+          duplicate.points = points;
+        } else {
+          templates.unshift({ id: Date.now(), name: trimmedName, category, points });
+        }
+
+        renderTemplates();
+      }
+
+      function renderTemplates() {
+        savedTaskSelect.innerHTML = `<option value="">登録済みから選択</option>` + templates
+          .map((template) => `<option value="${template.id}">${escapeHtml(template.name)}（${escapeHtml(template.category || "家事")}）</option>`)
+          .join("");
+      }
+
+      function loadSharedItems() {
+        const hash = window.location.hash;
+        if (!hash.startsWith("#list=")) {
+          return null;
+        }
+
+        try {
+          const encoded = hash.replace("#list=", "");
+          const decoded = decodeState(encoded);
+          if (Array.isArray(decoded)) {
+            return decoded;
+          }
+        } catch (error) {
+          console.warn("共有URLの読み込みに失敗しました。", error);
+        }
+
+        return null;
+      }
+
+      function buildShareUrl(itemsToEncode) {
+        const encoded = encodeState(itemsToEncode);
+        return `${window.location.origin}${window.location.pathname}#list=${encoded}`;
+      }
+
+      function encodeState(value) {
+        const json = JSON.stringify(value);
+        const bytes = new TextEncoder().encode(json);
+        let binary = "";
+        bytes.forEach((byte) => {
+          binary += String.fromCharCode(byte);
+        });
+        return btoa(binary);
+      }
+
+      function decodeState(value) {
+        const binary = atob(value);
+        const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+        const json = new TextDecoder().decode(bytes);
+        return JSON.parse(json);
+      }
+
+      function addHistoryEntry(entry) {
+        history.unshift({
+          ...entry,
+          createdAt: entry.createdAt ?? Date.now(),
+        });
+      }
+
+      function getFilteredItems() {
+        switch (currentFilter) {
+          case "active":
+            return items.filter((item) => !item.completed);
+          case "completed":
+            return items.filter((item) => item.completed);
+          default:
+            return items;
+        }
+      }
+
+      function getCurrentPoints() {
+        return history.reduce((total, entry) => total + (entry.type === "gain" ? entry.amount : -entry.amount), 0);
+      }
+
+      function render() {
+        const filtered = getFilteredItems();
+        const remaining = items.filter((item) => !item.completed).length;
+        const points = getCurrentPoints();
+        summary.textContent = `${items.length}件 / ${remaining}件残り`;
+        pointsBadge.textContent = `ポイント: ${points}pt`;
+
+        if (filtered.length === 0) {
+          list.innerHTML = `<li class="empty">${items.length === 0 ? "まだ何も追加されていません。" : "この表示には項目がありません。"}</li>`;
+          return;
+        }
+
+        const grouped = filtered.reduce((acc, item) => {
+          const key = item.category || "家事";
+          if (!acc[key]) acc[key] = [];
+          acc[key].push(item);
+          return acc;
+        }, {});
+
+        const sections = Object.entries(grouped)
+          .map(([category, tasks]) => {
+            const taskItems = tasks
+              .map(
+                (item) => `
+                  <li class="${item.completed ? "done" : ""}">
+                    <div class="left">
+                      <input class="checkbox" type="checkbox" data-id="${item.id}" ${item.completed ? "checked" : ""} />
+                      <div class="task-content">
+                        <div class="task-main">
+                          <span class="item-text">${escapeHtml(item.name)}</span>
+                          <span class="points-pill">+${Number(item.points) || DEFAULT_POINTS}pt</span>
+                        </div>
+                        <span class="category-badge">${escapeHtml(item.category || "家事")}</span>
+                      </div>
+                    </div>
+                    <button class="delete-btn" data-delete-id="${item.id}" type="button" aria-label="削除">×</button>
+                  </li>
+                `
+              )
+              .join("");
+
+            return `
+              <section class="section">
+                <h2 class="section-title">${escapeHtml(category)}</h2>
+                <ul>${taskItems}</ul>
+              </section>
+            `;
+          })
+          .join("");
+
+        list.innerHTML = sections;
+      }
+
+      function renderHistory() {
+        if (history.length === 0) {
+          historyList.innerHTML = '<div class="empty">まだポイント履歴がありません。</div>';
+          return;
+        }
+
+        const grouped = history.reduce((acc, entry) => {
+          const day = new Date(entry.createdAt).toLocaleDateString("ja-JP");
+          if (!acc[day]) acc[day] = { gain: [], spend: [] };
+          acc[day][entry.type === "spend" ? "spend" : "gain"].push(entry);
+          return acc;
+        }, {});
+
+        const sections = Object.entries(grouped)
+          .sort(([a], [b]) => (a > b ? -1 : 1))
+          .map(([day, group]) => {
+            const groupMarkup = [];
+            if (group.gain.length > 0) {
+              groupMarkup.push(`
+                <div class="history-group">
+                  <div class="history-group-title">獲得</div>
+                  ${group.gain
+                    .map(
+                      (entry) => `
+                        <div class="history-entry">
+                          <span>${escapeHtml(entry.label || "タスク")}</span>
+                          <span class="gain">+${entry.amount}pt</span>
+                        </div>
+                      `
+                    )
+                    .join("")}
+                </div>
+              `);
+            }
+            if (group.spend.length > 0) {
+              groupMarkup.push(`
+                <div class="history-group">
+                  <div class="history-group-title">消費</div>
+                  ${group.spend
+                    .map(
+                      (entry) => `
+                        <div class="history-entry">
+                          <span>${escapeHtml(entry.label || "消費")}</span>
+                          <span class="spend">-${entry.amount}pt</span>
+                        </div>
+                      `
+                    )
+                    .join("")}
+                </div>
+              `);
+            }
+
+            return `
+              <div class="history-day">
+                <div class="history-day-title">${escapeHtml(day)}</div>
+                ${groupMarkup.join("")}
+              </div>
+            `;
+          })
+          .join("");
+
+        historyList.innerHTML = sections;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      renderTemplates();
+      render();
+      renderHistory();
+
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js").catch((error) => {
+            console.warn("Service Worker の登録に失敗しました。", error);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
