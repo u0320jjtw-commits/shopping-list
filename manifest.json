@@ -1,10 +1,10 @@
 {
-  "name": "買い物リスト",
-  "short_name": "買い物リスト",
+  "name": "月間タスク管理",
+  "short_name": "タスク管理",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f5f7fb",
-  "theme_color": "#4f46e5",
+  "theme_color": "#2563eb",
   "icons": [
     {
       "src": "./icons/icon-192.svg",
