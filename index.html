@@ -15,7 +15,7 @@
         color-scheme: light;
         font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
         --bg: #f3f6fb;
-        --card: #ffffff;
+        --card: #fff;
         --text: #1e293b;
         --muted: #64748b;
         --accent: #2563eb;
@@ -24,9 +24,7 @@
         --sunday: #fff0f0;
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       body {
         min-width: 320px;
@@ -38,10 +36,7 @@
         -webkit-tap-highlight-color: transparent;
       }
 
-      button,
-      input {
-        font: inherit;
-      }
+      button, input, select { font: inherit; }
 
       button {
         min-height: 42px;
@@ -54,12 +49,8 @@
         touch-action: manipulation;
       }
 
-      button:hover {
-        border-color: #a8b7ca;
-      }
-
-      button:focus-visible,
-      input:focus-visible {
+      button:hover { border-color: #a8b7ca; }
+      button:focus-visible, input:focus-visible, select:focus-visible {
         outline: 3px solid #93c5fd;
         outline-offset: 2px;
       }
@@ -74,64 +65,29 @@
         box-shadow: 0 12px 32px rgb(30 41 59 / 7%);
       }
 
-      .page-header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 20px;
-        margin-bottom: 24px;
-      }
-
-      h1 {
-        margin: 0 0 6px;
-        font-size: clamp(1.5rem, 3vw, 2rem);
-      }
-
-      .subtitle {
-        margin: 0;
-        color: var(--muted);
-      }
-
-      .task-form,
-      .month-controls {
+      .page-header, .month-bar, .month-controls, .allowance-card, .task-row-heading, .table-footer {
         display: flex;
         align-items: center;
-        gap: 10px;
       }
 
-      .task-form {
-        margin-bottom: 22px;
+      .page-header, .month-bar { justify-content: space-between; gap: 20px; }
+      .page-header { margin-bottom: 26px; }
+      h1 { margin: 0 0 6px; font-size: clamp(1.5rem, 3vw, 2rem); }
+      .subtitle { margin: 0; color: var(--muted); }
+      .allowance-card {
+        flex: 0 0 auto;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 3px;
+        padding: 12px 16px;
+        border: 1px solid #bfdbfe;
+        border-radius: 14px;
+        background: #eff6ff;
       }
-
-      .task-input {
-        flex: 1;
-        min-width: 0;
-        min-height: 44px;
-        padding: 10px 12px;
-        border: 1px solid var(--border);
-        border-radius: 10px;
-      }
-
-      .primary {
-        border-color: var(--accent);
-        background: var(--accent);
-        color: #fff;
-        font-weight: 700;
-      }
-
-      .primary:hover {
-        border-color: #1d4ed8;
-        background: #1d4ed8;
-      }
-
-      .month-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 12px;
-      }
-
+      .allowance-label { color: #1d4ed8; font-size: 0.82rem; font-weight: 700; }
+      .allowance-amount { color: #1e40af; font-size: 1.45rem; font-weight: 800; }
+      .month-bar { margin-bottom: 12px; }
+      .month-controls { gap: 10px; }
       .month-controls input {
         min-height: 42px;
         padding: 7px 10px;
@@ -140,42 +96,13 @@
         background: #fff;
         color: var(--text);
       }
-
-      .summary {
-        color: var(--muted);
-        font-size: 0.95rem;
-      }
-
-      .legend {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-        margin: 0 0 12px;
-        color: var(--muted);
-        font-size: 0.85rem;
-      }
-
-      .legend-item {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .legend-swatch {
-        width: 14px;
-        height: 14px;
-        border: 1px solid var(--border);
-        border-radius: 4px;
-      }
-
-      .legend-swatch.saturday {
-        background: var(--saturday);
-      }
-
-      .legend-swatch.sunday {
-        background: var(--sunday);
-      }
-
+      .month-title { min-width: 150px; margin: 0; font-size: 1.25rem; text-align: center; }
+      .summary { color: var(--muted); font-size: 0.95rem; }
+      .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 12px; color: var(--muted); font-size: 0.85rem; }
+      .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+      .legend-swatch { width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 4px; }
+      .legend-swatch.saturday { background: var(--saturday); }
+      .legend-swatch.sunday { background: var(--sunday); }
       .table-scroll {
         overflow: auto;
         max-height: min(70vh, 760px);
@@ -191,180 +118,94 @@
         border-collapse: separate;
         font-size: 0.9rem;
       }
-
-      th,
-      td {
+      th, td {
         height: 54px;
         padding: 6px;
         border-right: 1px solid var(--border);
         border-bottom: 1px solid var(--border);
         text-align: center;
       }
-
-      thead th {
-        position: sticky;
-        top: 0;
-        z-index: 2;
-        height: 62px;
-        background: #f8fafc;
-      }
-
-      th:first-child,
-      td:first-child {
+      thead th { position: sticky; top: 0; z-index: 2; height: 62px; background: #f8fafc; }
+      th:first-child, td:first-child {
         position: sticky;
         left: 0;
         z-index: 1;
-        width: 240px;
-        min-width: 240px;
+        width: 230px;
+        min-width: 230px;
         text-align: left;
       }
-
-      thead th:first-child {
-        z-index: 3;
-        background: #f8fafc;
-      }
-
-      tbody th {
-        background: #fff;
-        font-weight: 400;
-      }
-
-      tr:last-child th,
-      tr:last-child td {
-        border-bottom: 0;
-      }
-
-      th:last-child,
-      td:last-child {
-        border-right: 0;
-      }
-
-      .date-column {
-        width: 48px;
-        min-width: 48px;
-      }
-
-      .saturday {
-        background: var(--saturday);
-      }
-
-      .sunday {
-        background: var(--sunday);
-      }
-
-      .date-number {
-        display: block;
-        font-weight: 700;
-      }
-
-      .weekday {
-        display: block;
-        margin-top: 3px;
-        color: var(--muted);
-        font-size: 0.74rem;
-        font-weight: 400;
-      }
-
-      .today .date-number {
-        color: var(--accent);
-        text-decoration: underline;
-        text-underline-offset: 3px;
-      }
-
-      .task-row-heading {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-      }
-
-      .task-name {
-        overflow-wrap: anywhere;
-        font-weight: 600;
-      }
-
-      .task-progress {
-        display: block;
-        margin-top: 4px;
-        color: var(--muted);
-        font-size: 0.76rem;
-      }
-
-      .delete-task {
-        flex: 0 0 auto;
-        min-height: 32px;
-        padding: 3px 8px;
-        border: 0;
-        background: transparent;
-        color: #b91c1c;
-        font-size: 1.2rem;
-      }
-
-      .status-toggle {
+      thead th:first-child { z-index: 3; background: #f8fafc; }
+      tbody th { background: #fff; font-weight: 400; }
+      th:last-child, td:last-child { border-right: 0; }
+      .date-column { width: 48px; min-width: 48px; }
+      .total-column { width: 76px; min-width: 76px; background: #f8fafc; font-weight: 700; }
+      .saturday { background: var(--saturday); }
+      .sunday { background: var(--sunday); }
+      .date-number { display: block; font-weight: 700; }
+      .weekday { display: block; margin-top: 3px; color: var(--muted); font-size: 0.74rem; font-weight: 400; }
+      .today .date-number { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+      .task-row-heading { justify-content: space-between; gap: 10px; }
+      .task-name { overflow-wrap: anywhere; font-weight: 600; }
+      .task-category { display: block; margin-bottom: 3px; color: var(--muted); font-size: 0.76rem; }
+      .delete-task { flex: 0 0 auto; min-height: 32px; padding: 3px 8px; border: 0; background: transparent; color: #b91c1c; font-size: 1.2rem; }
+      .cell-button {
         display: inline-grid;
-        width: 32px;
-        height: 32px;
-        min-height: 32px;
+        width: 38px;
+        height: 38px;
+        min-height: 38px;
         place-items: center;
         padding: 0;
-        border: 1px solid #cbd5e1;
-        border-radius: 8px;
-        background: rgb(255 255 255 / 75%);
-        color: #fff;
+        border-color: transparent;
+        background: transparent;
         font-size: 1rem;
         font-weight: 700;
       }
-
-      .status-toggle[aria-pressed="true"] {
-        border-color: #15803d;
-        background: #16a34a;
+      .cell-button:hover { border-color: #cbd5e1; background: rgb(255 255 255 / 80%); }
+      .cell-button.done { color: #15803d; font-size: 1.35rem; }
+      .cell-button.number-value { color: #1d4ed8; }
+      .subtotal-row th, .subtotal-row td { background: #f1f5f9; font-weight: 700; }
+      .subtotal-row th:first-child { z-index: 1; }
+      .grand-total { background: #dbeafe !important; color: #1e40af; font-weight: 800 !important; }
+      .empty-cell { padding: 28px; color: var(--muted); text-align: center !important; }
+      .table-footer { justify-content: center; margin-top: 18px; }
+      .primary { border-color: var(--accent); background: var(--accent); color: #fff; font-weight: 700; }
+      .primary:hover { border-color: #1d4ed8; background: #1d4ed8; }
+      .storage-message { margin: 12px 0 0; color: #b91c1c; font-size: 0.9rem; }
+      .storage-message[hidden] { display: none; }
+      dialog {
+        width: min(440px, calc(100% - 32px));
+        padding: 24px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        color: var(--text);
+        box-shadow: 0 20px 60px rgb(15 23 42 / 25%);
       }
-
-      .empty-cell {
-        padding: 28px;
-        color: var(--muted);
-        text-align: center !important;
+      dialog::backdrop { background: rgb(15 23 42 / 42%); }
+      dialog h2 { margin: 0 0 18px; font-size: 1.25rem; }
+      .dialog-fields { display: grid; gap: 14px; }
+      .dialog-fields label { display: grid; gap: 6px; font-weight: 600; }
+      .dialog-fields select, .dialog-fields input {
+        width: 100%;
+        min-height: 44px;
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        background: #fff;
+        color: var(--text);
       }
-
-      .storage-message {
-        margin: 12px 0 0;
-        color: #b91c1c;
-        font-size: 0.9rem;
-      }
-
-      .storage-message[hidden] {
-        display: none;
-      }
+      .dialog-hint { margin: 0; color: var(--muted); font-size: 0.9rem; }
+      .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
 
       @media (max-width: 640px) {
-        body {
-          padding: max(12px, env(safe-area-inset-top)) 8px max(12px, env(safe-area-inset-bottom));
-        }
-
-        .app {
-          padding: 18px 12px;
-          border-radius: 14px;
-        }
-
-        .page-header,
-        .month-bar {
-          align-items: flex-start;
-          flex-direction: column;
-        }
-
-        .task-form {
-          flex-wrap: wrap;
-        }
-
-        .task-input {
-          flex-basis: 100%;
-        }
-
-        th:first-child,
-        td:first-child {
-          width: 180px;
-          min-width: 180px;
-        }
+        body { padding: max(12px, env(safe-area-inset-top)) 8px max(12px, env(safe-area-inset-bottom)); }
+        .app { padding: 18px 12px; border-radius: 14px; }
+        .page-header, .month-bar { align-items: flex-start; flex-direction: column; }
+        .page-header { gap: 14px; }
+        .allowance-card { align-items: flex-start; }
+        .month-controls { width: 100%; justify-content: space-between; gap: 5px; }
+        .month-controls button { padding: 8px; }
+        .month-title { min-width: 0; font-size: 1.08rem; }
+        th:first-child, td:first-child { width: 180px; min-width: 180px; }
       }
     </style>
   </head>
@@ -373,42 +214,28 @@
       <header class="page-header">
         <div>
           <h1>月間タスク管理</h1>
-          <p class="subtitle">タスクごとに、毎日の実施状況を記録できます。</p>
+          <p class="subtitle">毎日のがんばりを記録して、お小遣いを確認しましょう。</p>
+        </div>
+        <div class="allowance-card" aria-live="polite">
+          <span class="allowance-label">今月のお小遣い</span>
+          <span id="allowance" class="allowance-amount">0円</span>
         </div>
       </header>
-
-      <form id="task-form" class="task-form">
-        <input
-          id="task-input"
-          class="task-input"
-          type="text"
-          maxlength="80"
-          placeholder="タスク名を入力（例: 運動、読書）"
-          aria-label="タスク名"
-          autocomplete="off"
-          required
-        />
-        <button class="primary" type="submit">タスクを追加</button>
-      </form>
 
       <section aria-label="月間タスク表">
         <div class="month-bar">
           <div class="month-controls">
             <button id="previous-month" type="button" aria-label="前の月">‹ 前月</button>
-            <label>
-              <span class="visually-hidden">表示する月</span>
-              <input id="month-picker" type="month" aria-label="表示する月" />
-            </label>
+            <h2 id="month-title" class="month-title" aria-live="polite"></h2>
             <button id="next-month" type="button" aria-label="次の月">翌月 ›</button>
-            <button id="current-month" type="button">今月</button>
           </div>
           <div id="summary" class="summary" aria-live="polite"></div>
         </div>
 
-        <div class="legend" aria-label="曜日の色分け">
+        <div class="legend" aria-label="曜日と入力方法">
           <span class="legend-item"><span class="legend-swatch saturday" aria-hidden="true"></span>土曜日</span>
           <span class="legend-item"><span class="legend-swatch sunday" aria-hidden="true"></span>日曜日</span>
-          <span>日付のマスを押すと実施済みにできます。</span>
+          <span>マスを選択して実施状況を登録できます。○または回数1につき10円です。</span>
         </div>
 
         <div class="table-scroll" tabindex="0" aria-label="横にスクロールできる月間タスク表">
@@ -418,11 +245,55 @@
             <tbody id="table-body"></tbody>
           </table>
         </div>
+        <div class="table-footer">
+          <button id="open-add-task" class="primary" type="button">＋ タスク追加</button>
+        </div>
       </section>
       <p id="storage-message" class="storage-message" role="alert" hidden>
         変更を保存できませんでした。ブラウザーのストレージ設定を確認してください。
       </p>
     </main>
+
+    <dialog id="add-dialog" aria-labelledby="add-dialog-title">
+      <form id="add-form">
+        <h2 id="add-dialog-title">タスク追加</h2>
+        <div class="dialog-fields">
+          <label>大カテゴリ
+            <select id="category-select" required></select>
+          </label>
+          <label>小カテゴリ
+            <select id="subcategory-select" required></select>
+          </label>
+          <label>タスク種別
+            <select id="type-select" required>
+              <option value="boolean">やった／やってない（○）</option>
+              <option value="count">回数を数字で入力</option>
+            </select>
+          </label>
+          <p id="type-hint" class="dialog-hint"></p>
+        </div>
+        <div class="dialog-actions">
+          <button id="cancel-add" type="button">キャンセル</button>
+          <button id="submit-add" class="primary" type="submit">追加</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="value-dialog" aria-labelledby="value-dialog-title">
+      <form id="value-form">
+        <h2 id="value-dialog-title">実施状況を入力</h2>
+        <div class="dialog-fields">
+          <label id="value-label" for="value-input">回数</label>
+          <input id="value-input" type="number" min="0" step="1" inputmode="numeric" />
+          <p id="value-hint" class="dialog-hint"></p>
+        </div>
+        <div class="dialog-actions">
+          <button id="clear-value" type="button">記録を消す</button>
+          <button id="cancel-value" type="button">キャンセル</button>
+          <button class="primary" type="submit">保存</button>
+        </div>
+      </form>
+    </dialog>
 
     <style>
       .visually-hidden {
@@ -440,65 +311,169 @@
       const STORAGE_KEY = "monthly-task-tracker-v1";
       const LEGACY_STORAGE_KEY = "task-list-items-v3";
       const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
-      const form = document.getElementById("task-form");
-      const taskInput = document.getElementById("task-input");
-      const monthPicker = document.getElementById("month-picker");
+      const categories = {
+        さんすう: { けいさん: "boolean", ぶんしょう: "count", はってん: "boolean" },
+        こくご: { おんどく: "boolean", どっかい: "count", かんじ: "boolean" },
+        そのた: { せんたく: "boolean", ランニング: "boolean", おえかき: "boolean" },
+      };
+      const categorySelect = document.getElementById("category-select");
+      const subcategorySelect = document.getElementById("subcategory-select");
+      const typeSelect = document.getElementById("type-select");
+      const addDialog = document.getElementById("add-dialog");
+      const valueDialog = document.getElementById("value-dialog");
+      const monthTitle = document.getElementById("month-title");
+      const monthControls = document.querySelector(".month-controls");
       const tableHead = document.getElementById("table-head");
       const tableBody = document.getElementById("table-body");
       const summary = document.getElementById("summary");
       const storageMessage = document.getElementById("storage-message");
       let state = loadState();
+      let editingCell = null;
 
-      monthPicker.value = monthKey(new Date());
+      categorySelect.innerHTML = Object.keys(categories)
+        .map((category) => `<option value="${category}">${category}</option>`).join("");
+      updateSubcategories();
 
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const name = taskInput.value.trim();
-        if (!name) {
-          taskInput.focus();
-          return;
-        }
-
-        state.tasks.push({ id: createId(), name });
-        persistState();
-        render();
-        taskInput.value = "";
-        taskInput.focus();
+      document.getElementById("open-add-task").addEventListener("click", () => {
+        updateSubcategories();
+        addDialog.showModal();
       });
-
+      document.getElementById("cancel-add").addEventListener("click", () => addDialog.close());
+      categorySelect.addEventListener("change", updateSubcategories);
+      subcategorySelect.addEventListener("change", updateTaskType);
       document.getElementById("previous-month").addEventListener("click", () => shiftMonth(-1));
       document.getElementById("next-month").addEventListener("click", () => shiftMonth(1));
-      document.getElementById("current-month").addEventListener("click", () => {
-        monthPicker.value = monthKey(new Date());
+
+      document.getElementById("add-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const category = categorySelect.value;
+        const subcategory = subcategorySelect.value;
+        if (!categories[category]?.[subcategory]) return;
+        if (state.tasks.some((task) => task.category === category && task.subcategory === subcategory)) return;
+
+        state.tasks.push({
+          id: createId(),
+          category,
+          subcategory,
+          type: categories[category][subcategory],
+        });
+        persistState();
+        addDialog.close();
         render();
       });
-      monthPicker.addEventListener("change", render);
 
       tableBody.addEventListener("click", (event) => {
         const deleteButton = event.target.closest("[data-delete-id]");
         if (deleteButton) {
           const taskId = deleteButton.dataset.deleteId;
           state.tasks = state.tasks.filter((task) => task.id !== taskId);
-          Object.keys(state.completed).forEach((date) => {
-            state.completed[date] = state.completed[date].filter((id) => id !== taskId);
-            if (state.completed[date].length === 0) delete state.completed[date];
+          Object.values(state.values).forEach((dayValues) => delete dayValues[taskId]);
+          Object.keys(state.values).forEach((date) => {
+            if (Object.keys(state.values[date]).length === 0) delete state.values[date];
           });
           persistState();
           render();
           return;
         }
 
-        const statusButton = event.target.closest("[data-date][data-task-id]");
-        if (!statusButton) return;
-        const { date, taskId } = statusButton.dataset;
-        const completedIds = state.completed[date] || [];
-        state.completed[date] = completedIds.includes(taskId)
-          ? completedIds.filter((id) => id !== taskId)
-          : [...completedIds, taskId];
-        if (state.completed[date].length === 0) delete state.completed[date];
+        const cellButton = event.target.closest("[data-date][data-task-id]");
+        if (!cellButton) return;
+        const task = state.tasks.find((item) => item.id === cellButton.dataset.taskId);
+        if (!task) return;
+        const date = cellButton.dataset.date;
+        if (task.type === "boolean") {
+          const dayValues = state.values[date] || {};
+          if (dayValues[task.id] === 1) {
+            delete dayValues[task.id];
+            if (Object.keys(dayValues).length === 0) delete state.values[date];
+            else state.values[date] = dayValues;
+          } else {
+            state.values[date] = { ...dayValues, [task.id]: 1 };
+          }
+          persistState();
+          render();
+          return;
+        }
+        openValueDialog(task, date);
+      });
+
+      document.getElementById("cancel-value").addEventListener("click", () => valueDialog.close());
+      document.getElementById("clear-value").addEventListener("click", () => {
+        if (!editingCell) return;
+        removeValue(editingCell.taskId, editingCell.date);
+        valueDialog.close();
         persistState();
         render();
       });
+      document.getElementById("value-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!editingCell) return;
+        const input = document.getElementById("value-input");
+        if (input.value === "" || !Number.isSafeInteger(Number(input.value)) || Number(input.value) < 0) {
+          input.setCustomValidity("0以上の整数を入力してください。");
+          input.reportValidity();
+          return;
+        }
+        input.setCustomValidity("");
+        const value = Number(input.value);
+        if (value === 0) removeValue(editingCell.taskId, editingCell.date);
+        else {
+          state.values[editingCell.date] = {
+            ...(state.values[editingCell.date] || {}),
+            [editingCell.taskId]: value,
+          };
+        }
+        valueDialog.close();
+        persistState();
+        render();
+      });
+
+      function updateSubcategories() {
+        const category = categorySelect.value || Object.keys(categories)[0];
+        const existing = new Set(state.tasks.filter((task) => task.category === category).map((task) => task.subcategory));
+        const available = Object.keys(categories[category]).filter((name) => !existing.has(name));
+        subcategorySelect.innerHTML = available.length
+          ? available.map((name) => `<option value="${name}">${name}</option>`).join("")
+          : `<option value="">追加できる小カテゴリはありません</option>`;
+        subcategorySelect.disabled = available.length === 0;
+        document.getElementById("submit-add").disabled = available.length === 0;
+        updateTaskType();
+      }
+
+      function updateTaskType() {
+        const type = categories[categorySelect.value]?.[subcategorySelect.value];
+        if (!type) {
+          typeSelect.value = "boolean";
+          typeSelect.disabled = true;
+          document.getElementById("type-hint").textContent = "この大カテゴリに追加できる小カテゴリはありません。";
+          return;
+        }
+        typeSelect.disabled = false;
+        typeSelect.value = type;
+        typeSelect.querySelector('[value="boolean"]').disabled = type !== "boolean";
+        typeSelect.querySelector('[value="count"]').disabled = type !== "count";
+        document.getElementById("type-hint").textContent =
+          type === "boolean" ? "この小カテゴリは「やった／やってない」で記録します。" : "この小カテゴリは実施した回数を数字で記録します。";
+      }
+
+      function openValueDialog(task, date) {
+        editingCell = { taskId: task.id, date };
+        const input = document.getElementById("value-input");
+        const value = state.values[date]?.[task.id] || 0;
+        document.getElementById("value-dialog-title").textContent = `${task.subcategory}：回数を入力`;
+        document.getElementById("value-label").textContent = `${Number(date.slice(5, 7))}月${Number(date.slice(8, 10))}日の回数`;
+        document.getElementById("value-hint").textContent = "0を入力するか「記録を消す」を選ぶと、記録を解除します。";
+        input.value = value === 0 ? "" : String(value);
+        input.setCustomValidity("");
+        valueDialog.showModal();
+        input.focus();
+      }
+
+      function removeValue(taskId, date) {
+        if (!state.values[date]) return;
+        delete state.values[date][taskId];
+        if (Object.keys(state.values[date]).length === 0) delete state.values[date];
+      }
 
       function loadState() {
         try {
@@ -507,40 +482,53 @@
 
           const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
           if (legacy !== null) {
-            const migrated = normalizeState({
-              tasks: JSON.parse(legacy),
-              completed: {},
-            });
+            const migrated = normalizeState({ tasks: JSON.parse(legacy), completed: {} });
             localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
             return migrated;
           }
         } catch (error) {
           console.warn("保存済みのタスクを読み込めませんでした。", error);
         }
-        return { tasks: [], completed: {} };
+        return { tasks: [], values: {} };
       }
 
       function normalizeState(source) {
         const tasks = (Array.isArray(source?.tasks) ? source.tasks : [])
           .map((task, index) => {
             if (typeof task === "string") {
-              return { id: `legacy-${index}`, name: task.trim() };
+              return { id: `legacy-${index}`, category: "そのた", subcategory: task.trim(), type: "boolean" };
             }
+            const category = String(task?.category ?? "そのた");
+            const subcategory = String(task?.subcategory ?? task?.name ?? "").trim();
+            const validCategory = categories[category] ? category : "そのた";
+            const validSubcategory = categories[validCategory][subcategory] ? subcategory : "";
             return {
               id: String(task?.id ?? `task-${index}`),
-              name: String(task?.name ?? "").trim(),
+              category: validCategory,
+              subcategory: validSubcategory || subcategory,
+              type: categories[validCategory][validSubcategory] || (task?.type === "count" ? "count" : "boolean"),
             };
           })
-          .filter((task) => task.name);
-        const completed = {};
-        if (source?.completed && typeof source.completed === "object" && !Array.isArray(source.completed)) {
+          .filter((task) => task.subcategory);
+        const values = {};
+        if (source?.values && typeof source.values === "object" && !Array.isArray(source.values)) {
+          Object.entries(source.values).forEach(([date, records]) => {
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !records || typeof records !== "object" || Array.isArray(records)) return;
+            const dayValues = {};
+            Object.entries(records).forEach(([id, value]) => {
+              const number = Number(value);
+              if (Number.isSafeInteger(number) && number > 0) dayValues[id] = number;
+            });
+            if (Object.keys(dayValues).length > 0) values[date] = dayValues;
+          });
+        } else if (source?.completed && typeof source.completed === "object" && !Array.isArray(source.completed)) {
           Object.entries(source.completed).forEach(([date, ids]) => {
-            if (/^\d{4}-\d{2}-\d{2}$/.test(date) && Array.isArray(ids)) {
-              completed[date] = ids.map(String);
+            if (/^\d{4}-\d{2}-\d{2}$/.test(date) && Array.isArray(ids) && ids.length > 0) {
+              values[date] = Object.fromEntries(ids.map(String).map((id) => [id, 1]));
             }
           });
         }
-        return { tasks, completed };
+        return { tasks, values };
       }
 
       function persistState() {
@@ -561,9 +549,17 @@
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
       }
 
+      function selectedMonth() {
+        const value = new URLSearchParams(window.location.search).get("month");
+        return /^\d{4}-\d{2}$/.test(value || "") ? value : monthKey(new Date());
+      }
+
       function shiftMonth(amount) {
-        const [year, month] = monthPicker.value.split("-").map(Number);
-        monthPicker.value = monthKey(new Date(year, month - 1 + amount, 1));
+        const [year, month] = selectedMonth().split("-").map(Number);
+        const next = new Date(year, month - 1 + amount, 1);
+        const url = new URL(window.location.href);
+        url.searchParams.set("month", monthKey(next));
+        window.history.replaceState(null, "", url);
         render();
       }
 
@@ -571,94 +567,81 @@
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
       }
 
+      function valueFor(date, taskId) {
+        return state.values[date]?.[taskId] || 0;
+      }
+
       function render() {
-        const [year, month] = monthPicker.value.split("-").map(Number);
-        if (!year || !month) return;
-
-        const daysInMonth = new Date(year, month, 0).getDate();
-        const dates = Array.from({ length: daysInMonth }, (_, index) => new Date(year, month - 1, index + 1));
-        const monthLabel = new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "long" }).format(
-          new Date(year, month - 1, 1)
-        );
-        const completedCount = state.tasks.reduce(
-          (total, task) => total + dates.filter((date) => (state.completed[formatDate(date)] || []).includes(task.id)).length,
-          0
-        );
-        const possibleCount = state.tasks.length * daysInMonth;
-        const percentage = possibleCount === 0 ? 0 : Math.round((completedCount / possibleCount) * 100);
-        summary.textContent = `${state.tasks.length}タスク · 実施 ${completedCount}/${possibleCount}回 (${percentage}%)`;
+        const [year, month] = selectedMonth().split("-").map(Number);
+        if (!year || month < 1 || month > 12) return;
+        const dates = Array.from({ length: new Date(year, month, 0).getDate() }, (_, index) => new Date(year, month - 1, index + 1));
+        const monthLabel = new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "long" }).format(new Date(year, month - 1, 1));
+        const allValues = dates.flatMap((date) => state.tasks.map((task) => valueFor(formatDate(date), task.id)));
+        const earned = allValues.reduce((total, value) => total + value, 0);
+        const possibleCount = state.tasks.reduce((sum, task) => sum + dates.length, 0);
+        const recordedCount = allValues.filter((value) => value > 0).length;
+        summary.textContent = `${state.tasks.length}タスク · 記録 ${recordedCount}/${possibleCount}件`;
+        monthTitle.textContent = monthLabel;
+        document.getElementById("allowance").textContent = `${(earned * 10).toLocaleString("ja-JP")}円`;
         document.getElementById("table-caption").textContent = `${monthLabel}のタスク実施状況`;
-
-        tableHead.innerHTML = `
-          <tr>
-            <th scope="col">タスク</th>
-            ${dates.map(renderDateHeading).join("")}
-          </tr>
-        `;
+        tableHead.innerHTML = `<tr>
+          <th scope="col">大カテゴリ / 小カテゴリ</th>
+          ${dates.map(renderDateHeading).join("")}
+          <th class="total-column" scope="col">タスク<br />小計</th>
+        </tr>`;
 
         if (state.tasks.length === 0) {
-          tableBody.innerHTML = `<tr><td class="empty-cell" colspan="${daysInMonth + 1}">タスクを追加すると、日ごとの実施状況を記録できます。</td></tr>`;
+          tableBody.innerHTML = `<tr><td class="empty-cell" colspan="${dates.length + 2}">「タスク追加」から小カテゴリを追加すると、日ごとの実施状況を記録できます。</td></tr>`;
           return;
         }
-
-        tableBody.innerHTML = state.tasks.map((task) => renderTaskRow(task, dates)).join("");
+        tableBody.innerHTML = state.tasks.map((task) => renderTaskRow(task, dates)).join("") + renderTotals(dates);
       }
 
       function renderDateHeading(date) {
         const weekday = date.getDay();
         const className = weekday === 6 ? "saturday" : weekday === 0 ? "sunday" : "";
         const today = formatDate(date) === formatDate(new Date()) ? "today" : "";
-        return `
-          <th class="date-column ${className} ${today}" scope="col">
-            <span class="date-number">${date.getDate()}</span>
-            <span class="weekday">${weekdays[weekday]}</span>
-          </th>
-        `;
+        return `<th class="date-column ${className} ${today}" scope="col">
+          <span class="date-number">${date.getDate()}</span><span class="weekday">${weekdays[weekday]}</span>
+        </th>`;
       }
 
       function renderTaskRow(task, dates) {
-        const completedDays = dates.filter((date) => (state.completed[formatDate(date)] || []).includes(task.id)).length;
-        return `
-          <tr>
-            <th scope="row">
-              <div class="task-row-heading">
-                <div>
-                  <span class="task-name">${escapeHtml(task.name)}</span>
-                  <span class="task-progress">${completedDays}/${dates.length}日 実施</span>
-                </div>
-                <button
-                  class="delete-task"
-                  data-delete-id="${escapeHtml(task.id)}"
-                  type="button"
-                  aria-label="${escapeHtml(task.name)}を削除"
-                  title="タスクを削除"
-                >×</button>
-              </div>
-            </th>
-            ${dates.map((date) => renderStatusCell(task, date)).join("")}
-          </tr>
-        `;
+        const taskTotal = dates.reduce((total, date) => total + valueFor(formatDate(date), task.id), 0);
+        return `<tr>
+          <th scope="row"><div class="task-row-heading"><div>
+            <span class="task-category">${escapeHtml(task.category)}</span>
+            <span class="task-name">${escapeHtml(task.subcategory)}</span>
+          </div><button class="delete-task" data-delete-id="${escapeHtml(task.id)}" type="button"
+            aria-label="${escapeHtml(task.subcategory)}を削除" title="タスクを削除">×</button></div></th>
+          ${dates.map((date) => renderCell(task, date)).join("")}
+          <td class="total-column">${taskTotal}</td>
+        </tr>`;
       }
 
-      function renderStatusCell(task, date) {
+      function renderCell(task, date) {
         const dateKey = formatDate(date);
+        const value = valueFor(dateKey, task.id);
         const weekday = date.getDay();
         const dayClass = weekday === 6 ? "saturday" : weekday === 0 ? "sunday" : "";
-        const done = (state.completed[dateKey] || []).includes(task.id);
-        const status = done ? "実施済み" : "未実施";
-        return `
-          <td class="${dayClass}">
-            <button
-              class="status-toggle"
-              type="button"
-              data-date="${dateKey}"
-              data-task-id="${escapeHtml(task.id)}"
-              aria-pressed="${done}"
-              aria-label="${escapeHtml(task.name)}、${date.getMonth() + 1}月${date.getDate()}日、${status}"
-              title="${status}"
-            >${done ? "✓" : ""}</button>
-          </td>
-        `;
+        const isBoolean = task.type === "boolean";
+        const display = isBoolean ? (value ? "○" : "") : (value ? String(value) : "－");
+        const status = isBoolean ? (value ? "実施済み" : "未実施") : (value ? `${value}回` : "未記録");
+        return `<td class="${dayClass}"><button class="cell-button ${isBoolean && value ? "done" : ""} ${!isBoolean && value ? "number-value" : ""}"
+          type="button" data-date="${dateKey}" data-task-id="${escapeHtml(task.id)}"
+          aria-label="${escapeHtml(task.subcategory)}、${date.getMonth() + 1}月${date.getDate()}日、${status}"
+          title="${status}">${display}</button></td>`;
+      }
+
+      function renderTotals(dates) {
+        const dailyTotals = dates.map((date) =>
+          state.tasks.reduce((total, task) => total + valueFor(formatDate(date), task.id), 0));
+        const grandTotal = dailyTotals.reduce((total, value) => total + value, 0);
+        return `<tr class="subtotal-row">
+          <th scope="row">日別小計</th>
+          ${dailyTotals.map((value) => `<td>${value}</td>`).join("")}
+          <td class="total-column grand-total">${grandTotal}</td>
+        </tr>`;
       }
 
       function escapeHtml(value) {
