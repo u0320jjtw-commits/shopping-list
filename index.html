@@ -86,8 +86,9 @@
       }
       .allowance-label { color: #1d4ed8; font-size: 0.82rem; font-weight: 700; }
       .allowance-amount { color: #1e40af; font-size: 1.45rem; font-weight: 800; }
-      .month-bar { margin-bottom: 12px; }
-      .month-controls { gap: 10px; }
+      .allowance-details { display: grid; gap: 2px; color: var(--muted); font-size: 0.72rem; text-align: right; }
+      .month-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); margin-bottom: 12px; }
+      .month-controls { grid-column: 2; gap: 10px; }
       .month-controls input {
         min-height: 42px;
         padding: 7px 10px;
@@ -97,7 +98,14 @@
         color: var(--text);
       }
       .month-title { min-width: 150px; margin: 0; font-size: 1.25rem; text-align: center; }
-      .summary { color: var(--muted); font-size: 0.95rem; }
+      .summary { grid-column: 3; justify-self: end; color: var(--muted); font-size: 0.95rem; }
+      .category-overview { margin: 0 0 20px; }
+      .category-overview h2 { margin: 0 0 10px; font-size: 1rem; }
+      .category-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+      .category-card { padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: #f8fafc; }
+      .category-card h3 { margin: 0 0 10px; font-size: 0.95rem; }
+      .subcategory-list { display: flex; flex-wrap: wrap; gap: 7px; margin: 0; padding: 0; list-style: none; }
+      .subcategory-list li { padding: 5px 9px; border: 1px solid #dbeafe; border-radius: 999px; background: #eff6ff; color: #1e40af; font-size: 0.84rem; }
       .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 12px; color: var(--muted); font-size: 0.85rem; }
       .legend-item { display: inline-flex; align-items: center; gap: 6px; }
       .legend-swatch { width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 4px; }
@@ -199,12 +207,15 @@
       @media (max-width: 640px) {
         body { padding: max(12px, env(safe-area-inset-top)) 8px max(12px, env(safe-area-inset-bottom)); }
         .app { padding: 18px 12px; border-radius: 14px; }
-        .page-header, .month-bar { align-items: flex-start; flex-direction: column; }
+        .page-header { align-items: flex-start; flex-direction: column; }
         .page-header { gap: 14px; }
         .allowance-card { align-items: flex-start; }
-        .month-controls { width: 100%; justify-content: space-between; gap: 5px; }
+        .allowance-details { text-align: left; }
+        .month-bar { display: flex; flex-direction: column; gap: 8px; }
+        .month-controls { width: 100%; justify-content: center; gap: 5px; }
         .month-controls button { padding: 8px; }
         .month-title { min-width: 0; font-size: 1.08rem; }
+        .category-list { grid-template-columns: 1fr; gap: 8px; }
         th:first-child, td:first-child { width: 180px; min-width: 180px; }
       }
     </style>
@@ -219,10 +230,18 @@
         <div class="allowance-card" aria-live="polite">
           <span class="allowance-label">今月のお小遣い</span>
           <span id="allowance" class="allowance-amount">0円</span>
+          <div class="allowance-details">
+            <span id="allowance-estimate">今月の見込み額 —円</span>
+            <span id="allowance-comparison">先月比 —</span>
+          </div>
         </div>
       </header>
 
       <section aria-label="月間タスク表">
+        <section class="category-overview" aria-labelledby="category-overview-title">
+          <h2 id="category-overview-title">カテゴリ一覧</h2>
+          <div id="category-list" class="category-list"></div>
+        </section>
         <div class="month-bar">
           <div class="month-controls">
             <button id="previous-month" type="button" aria-label="前の月">‹ 前月</button>
@@ -583,6 +602,8 @@
         summary.textContent = `${state.tasks.length}タスク · 記録 ${recordedCount}/${possibleCount}件`;
         monthTitle.textContent = monthLabel;
         document.getElementById("allowance").textContent = `${(earned * 10).toLocaleString("ja-JP")}円`;
+        renderAllowanceDetails(year, month, earned * 10, dates.length);
+        renderCategoryOverview();
         document.getElementById("table-caption").textContent = `${monthLabel}のタスク実施状況`;
         tableHead.innerHTML = `<tr>
           <th scope="col">大カテゴリ / 小カテゴリ</th>
@@ -595,6 +616,44 @@
           return;
         }
         tableBody.innerHTML = state.tasks.map((task) => renderTaskRow(task, dates)).join("") + renderTotals(dates);
+      }
+
+      function renderAllowanceDetails(year, month, earned, daysInMonth) {
+        const now = new Date();
+        const selected = new Date(year, month - 1, 1);
+        const current = new Date(now.getFullYear(), now.getMonth(), 1);
+        const elapsedDays = selected < current ? daysInMonth : selected.getTime() === current.getTime() ? now.getDate() : 0;
+        const estimate = elapsedDays ? Math.round((earned / elapsedDays) * daysInMonth) : null;
+        document.getElementById("allowance-estimate").textContent =
+          `今月の見込み額 ${estimate === null ? "—" : `${estimate.toLocaleString("ja-JP")}円`}`;
+
+        const previousMonth = new Date(year, month - 2, 1);
+        const previousAllowance = calculateMonthAllowance(previousMonth.getFullYear(), previousMonth.getMonth() + 1);
+        const difference = earned - previousAllowance;
+        const formattedDifference = `${difference > 0 ? "+" : ""}${difference.toLocaleString("ja-JP")}円`;
+        document.getElementById("allowance-comparison").textContent =
+          `先月比 ${formattedDifference}（先月 ${previousAllowance.toLocaleString("ja-JP")}円）`;
+      }
+
+      function calculateMonthAllowance(year, month) {
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const earned = state.tasks.reduce((total, task) => {
+          for (let day = 1; day <= daysInMonth; day += 1) {
+            total += valueFor(formatDate(new Date(year, month - 1, day)), task.id);
+          }
+          return total;
+        }, 0);
+        return earned * 10;
+      }
+
+      function renderCategoryOverview() {
+        document.getElementById("category-list").innerHTML = Object.entries(categories).map(([category, subcategories]) => `
+          <section class="category-card" aria-label="${escapeHtml(category)}">
+            <h3>${escapeHtml(category)}</h3>
+            <ul class="subcategory-list">
+              ${Object.keys(subcategories).map((subcategory) => `<li>${escapeHtml(subcategory)}</li>`).join("")}
+            </ul>
+          </section>`).join("");
       }
 
       function renderDateHeading(date) {
