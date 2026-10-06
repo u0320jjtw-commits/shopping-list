@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#2563eb" />
+    <meta name="theme-color" content="#ff7f50" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="月間タスク管理" />
@@ -14,14 +14,14 @@
       :root {
         color-scheme: light;
         font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
-        --bg: #f3f6fb;
+        --bg: #fff8e7;
         --card: #fff;
-        --text: #1e293b;
-        --muted: #64748b;
-        --accent: #2563eb;
-        --border: #dbe3ee;
-        --saturday: #edf6ff;
-        --sunday: #fff0f0;
+        --text: #453b66;
+        --muted: #817997;
+        --accent: #ff7f50;
+        --border: #f0dfd2;
+        --saturday: #e8f7ff;
+        --sunday: #fff0f3;
       }
 
       * { box-sizing: border-box; }
@@ -30,26 +30,29 @@
         min-width: 320px;
         min-height: 100vh;
         margin: 0;
-        padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+        padding: max(10px, env(safe-area-inset-top)) 12px max(10px, env(safe-area-inset-bottom));
         background: var(--bg);
         color: var(--text);
         -webkit-tap-highlight-color: transparent;
+        background-image: radial-gradient(#ffdba8 1px, transparent 1px);
+        background-size: 18px 18px;
       }
 
       button, input, select { font: inherit; }
 
       button {
-        min-height: 42px;
-        padding: 9px 14px;
+        min-height: 32px;
+        padding: 5px 10px;
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 12px;
         background: #fff;
         color: var(--text);
         cursor: pointer;
         touch-action: manipulation;
+        box-shadow: 0 2px 0 rgb(69 59 102 / 7%);
       }
 
-      button:hover { border-color: #a8b7ca; }
+      button:hover { border-color: #f5a27f; transform: translateY(-1px); }
       button:focus-visible, input:focus-visible, select:focus-visible {
         outline: 3px solid #93c5fd;
         outline-offset: 2px;
@@ -58,11 +61,11 @@
       .app {
         width: min(1500px, 100%);
         margin: 0 auto;
-        padding: 28px;
-        border: 1px solid var(--border);
-        border-radius: 20px;
+        padding: 14px;
+        border: 2px solid #ffe2b9;
+        border-radius: 22px;
         background: var(--card);
-        box-shadow: 0 12px 32px rgb(30 41 59 / 7%);
+        box-shadow: 0 8px 22px rgb(109 78 56 / 10%);
       }
 
       .page-header, .month-bar, .month-controls, .allowance-card, .task-row-heading, .table-footer {
@@ -70,133 +73,123 @@
         align-items: center;
       }
 
-      .page-header, .month-bar { justify-content: space-between; gap: 20px; }
-      .page-header { margin-bottom: 26px; }
-      h1 { margin: 0 0 6px; font-size: clamp(1.5rem, 3vw, 2rem); }
+      .page-header, .month-bar { justify-content: space-between; gap: 10px; }
+      .page-header { margin-bottom: 8px; }
+      h1 { margin: 0 0 2px; color: #6c58a8; font-size: clamp(1.25rem, 2.3vw, 1.65rem); }
       .subtitle { margin: 0; color: var(--muted); }
       .allowance-card {
         flex: 0 0 auto;
         flex-direction: column;
         align-items: flex-end;
-        gap: 3px;
-        padding: 12px 16px;
-        border: 1px solid #bfdbfe;
-        border-radius: 14px;
-        background: #eff6ff;
+        gap: 1px;
+        padding: 5px 12px;
+        border: 2px solid #ffe0a8;
+        border-radius: 16px;
+        background: #fff7d9;
       }
-      .allowance-label { color: #1d4ed8; font-size: 0.82rem; font-weight: 700; }
-      .allowance-amount { color: #1e40af; font-size: 1.45rem; font-weight: 800; }
-      .allowance-details { display: grid; gap: 2px; color: var(--muted); font-size: 0.72rem; text-align: right; }
-      .month-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); margin-bottom: 12px; }
+      .allowance-label { color: #a96d00; font-size: 0.72rem; font-weight: 700; }
+      .allowance-amount { color: #e07820; font-size: 1.25rem; font-weight: 800; }
+      .allowance-details { display: grid; gap: 1px; color: var(--muted); font-size: 0.66rem; text-align: right; }
+      .month-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); margin-bottom: 6px; }
       .month-controls { grid-column: 2; gap: 10px; }
       .month-controls input {
-        min-height: 42px;
-        padding: 7px 10px;
+        min-height: 32px;
+        padding: 4px 8px;
         border: 1px solid var(--border);
         border-radius: 10px;
         background: #fff;
         color: var(--text);
       }
-      .month-title { min-width: 150px; margin: 0; font-size: 1.25rem; text-align: center; }
-      .summary { grid-column: 3; justify-self: end; color: var(--muted); font-size: 0.95rem; }
-      .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 12px; color: var(--muted); font-size: 0.85rem; }
+      .month-title { min-width: 130px; margin: 0; color: #6c58a8; font-size: 1.1rem; text-align: center; }
+      .summary { grid-column: 3; justify-self: end; color: var(--muted); font-size: 0.75rem; }
+      .legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; color: var(--muted); font-size: 0.7rem; }
       .legend-item { display: inline-flex; align-items: center; gap: 6px; }
       .legend-swatch { width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 4px; }
       .legend-swatch.saturday { background: var(--saturday); }
       .legend-swatch.sunday { background: var(--sunday); }
       .table-scroll {
-        overflow: auto;
-        max-height: min(70vh, 760px);
+        overflow: hidden;
         border: 1px solid var(--border);
-        border-radius: 12px;
-        overscroll-behavior: contain;
+        border-radius: 14px;
       }
 
       table {
-        width: max-content;
-        min-width: 100%;
+        width: 100%;
+        table-layout: fixed;
         border-spacing: 0;
         border-collapse: separate;
-        font-size: 0.9rem;
+        font-size: clamp(0.55rem, 0.82vw, 0.76rem);
       }
       th, td {
-        height: 54px;
-        padding: 6px;
+        height: 30px;
+        padding: 2px 1px;
         border-right: 1px solid var(--border);
         border-bottom: 1px solid var(--border);
         text-align: center;
       }
-      thead th { position: sticky; top: 0; z-index: 2; height: 62px; background: #f8fafc; }
+      thead th { height: 34px; background: #fff8e9; }
       th:first-child, td:first-child {
-        position: sticky;
-        left: 0;
-        z-index: 1;
-        width: 230px;
-        min-width: 230px;
+        width: 150px;
         text-align: left;
       }
-      thead th:first-child { z-index: 3; background: #f8fafc; }
+      thead th:first-child { background: #fff8e9; }
       tbody th { background: #fff; font-weight: 400; }
       th:last-child, td:last-child { border-right: 0; }
-      .date-column { width: 48px; min-width: 48px; }
-      .total-column { width: 76px; min-width: 76px; background: #f8fafc; font-weight: 700; }
+      .date-column { font-size: 0.68rem; }
+      .total-column { width: 38px; background: #fff8e9; font-weight: 700; }
       .saturday { background: var(--saturday); }
       .sunday { background: var(--sunday); }
       .date-number { display: block; font-weight: 700; }
-      .weekday { display: block; margin-top: 3px; color: var(--muted); font-size: 0.74rem; font-weight: 400; }
-      .today .date-number { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+      .weekday { display: block; color: var(--muted); font-size: 0.56rem; font-weight: 400; }
+      .today .date-number { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
       .task-row-heading { justify-content: space-between; gap: 10px; }
-      .category-row th { background: #eaf0f7; font-weight: 700; }
-      .category-row td { height: 38px; padding: 0; background: #f8fafc; }
-      .category-name { display: flex; align-items: center; gap: 9px; }
-      .category-marker { width: 8px; height: 8px; border-radius: 2px; background: var(--accent); }
       .task-name {
-        position: relative;
-        display: block;
-        margin-left: 18px;
-        padding-left: 13px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
         overflow-wrap: anywhere;
         font-weight: 600;
       }
-      .task-name::before {
-        position: absolute;
-        top: 50%;
-        left: 0;
-        width: 9px;
-        border-top: 1px solid #94a3b8;
-        content: "";
-      }
-      .inactive-task-row th { color: var(--muted); }
-      .inactive-task-row td { background: #fcfcfd; }
-      .task-unavailable { margin-left: auto; color: var(--muted); font-size: 0.74rem; font-weight: 400; }
-      .delete-task { flex: 0 0 auto; min-height: 32px; padding: 3px 8px; border: 0; background: transparent; color: #b91c1c; font-size: 1.2rem; }
+      .category-tag { flex: 0 0 auto; padding: 1px 4px; border-radius: 6px; background: var(--category-color); color: #fff; font-size: 0.58rem; }
+      .delete-task { flex: 0 0 auto; min-height: 22px; padding: 0 4px; border: 0; background: transparent; color: #ed6a7b; font-size: 0.95rem; box-shadow: none; }
       .cell-button {
-        display: inline-grid;
-        width: 38px;
-        height: 38px;
-        min-height: 38px;
+        display: grid;
+        width: 100%;
+        height: 25px;
+        min-height: 25px;
         place-items: center;
         padding: 0;
         border-color: transparent;
         background: transparent;
-        font-size: 1rem;
+        font-size: 0.72rem;
         font-weight: 700;
+        box-shadow: none;
       }
-      .cell-button:hover { border-color: #cbd5e1; background: rgb(255 255 255 / 80%); }
-      .cell-button.done { color: #15803d; font-size: 1.35rem; }
-      .cell-button.number-value { color: #1d4ed8; }
-      .subtotal-row th, .subtotal-row td { background: #f1f5f9; font-weight: 700; }
-      .subtotal-row th:first-child { z-index: 1; }
-      .grand-total { background: #dbeafe !important; color: #1e40af; font-weight: 800 !important; }
-      .empty-cell { padding: 28px; color: var(--muted); text-align: center !important; }
-      .table-footer { justify-content: center; margin-top: 18px; }
+      .cell-button:hover { border-color: #ffc5a8; background: rgb(255 255 255 / 80%); }
+      .cell-button.done { color: #28a875; font-size: 0.95rem; }
+      .cell-button.number-value { color: #6c58a8; }
+      .subtotal-row th, .subtotal-row td { background: #f7f0ff; font-weight: 700; }
+      .grand-total { background: #eee6ff !important; color: #6c58a8; font-weight: 800 !important; }
+      .empty-cell { padding: 12px; color: var(--muted); text-align: center !important; }
+      .table-footer { justify-content: center; gap: 8px; margin-top: 8px; }
       .primary { border-color: var(--accent); background: var(--accent); color: #fff; font-weight: 700; }
-      .primary:hover { border-color: #1d4ed8; background: #1d4ed8; }
+      .primary:hover { border-color: #ed7044; background: #ed7044; }
+      .secondary { border-color: #b6a9e3; background: #f2edff; color: #6c58a8; font-weight: 700; }
+      .view[hidden] { display: none; }
+      .view-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 6px; }
+      .secondary[aria-pressed="true"] { border-color: #c9b9f2; background: #eee6ff; }
+      .chart-card { padding: 10px; border: 1px solid var(--border); border-radius: 14px; background: #fffdf8; }
+      .chart-title { margin: 0 0 5px; color: #6c58a8; font-size: 0.95rem; }
+      #monthly-chart { display: block; width: 100%; height: min(52vh, 360px); min-height: 190px; overflow: visible; }
+      .chart-legend { display: flex; flex-wrap: wrap; gap: 5px 12px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 0.7rem; }
+      .chart-legend li { display: inline-flex; align-items: center; gap: 5px; }
+      .chart-swatch { width: 10px; height: 10px; border-radius: 3px; background: var(--category-color); opacity: var(--task-opacity, 1); }
+      .chart-empty { padding: 30px; color: var(--muted); text-align: center; }
       .storage-message { margin: 12px 0 0; color: #b91c1c; font-size: 0.9rem; }
       .storage-message[hidden] { display: none; }
       dialog {
         width: min(440px, calc(100% - 32px));
-        padding: 24px;
+        padding: 18px;
         border: 1px solid var(--border);
         border-radius: 16px;
         color: var(--text);
@@ -204,11 +197,11 @@
       }
       dialog::backdrop { background: rgb(15 23 42 / 42%); }
       dialog h2 { margin: 0 0 18px; font-size: 1.25rem; }
-      .dialog-fields { display: grid; gap: 14px; }
+      .dialog-fields { display: grid; gap: 10px; }
       .dialog-fields label { display: grid; gap: 6px; font-weight: 600; }
       .dialog-fields select, .dialog-fields input {
         width: 100%;
-        min-height: 44px;
+        min-height: 38px;
         padding: 8px 10px;
         border: 1px solid var(--border);
         border-radius: 9px;
@@ -216,20 +209,32 @@
         color: var(--text);
       }
       .dialog-hint { margin: 0; color: var(--muted); font-size: 0.9rem; }
-      .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
+      .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 
       @media (max-width: 640px) {
-        body { padding: max(12px, env(safe-area-inset-top)) 8px max(12px, env(safe-area-inset-bottom)); }
-        .app { padding: 18px 12px; border-radius: 14px; }
+        body { padding: max(6px, env(safe-area-inset-top)) 4px max(6px, env(safe-area-inset-bottom)); }
+        .app { padding: 8px 5px; border-radius: 14px; }
         .page-header { align-items: flex-start; flex-direction: column; }
-        .page-header { gap: 14px; }
+        .page-header { gap: 6px; }
         .allowance-card { align-items: flex-start; }
         .allowance-details { text-align: left; }
         .month-bar { display: flex; flex-direction: column; gap: 8px; }
         .month-controls { width: 100%; justify-content: center; gap: 5px; }
         .month-controls button { padding: 8px; }
         .month-title { min-width: 0; font-size: 1.08rem; }
-        th:first-child, td:first-child { width: 180px; min-width: 180px; }
+        th:first-child, td:first-child { width: 76px; }
+        .task-row-heading { gap: 0; }
+        .task-name { gap: 2px; font-size: 0.58rem; }
+        .category-tag { max-width: 31px; overflow: hidden; text-overflow: ellipsis; }
+        .delete-task { font-size: 0.75rem; }
+        .month-controls { gap: 3px; }
+        .month-controls button { min-height: 28px; padding: 3px 5px; font-size: 0.7rem; }
+        .month-title { min-width: 88px; font-size: 0.9rem; }
+        .date-column { font-size: 0.55rem; }
+        .weekday { font-size: 0.48rem; }
+        th, td { height: 27px; padding: 1px 0; }
+        thead th { height: 30px; }
+        .cell-button { height: 23px; min-height: 23px; font-size: 0.6rem; }
       }
     </style>
   </head>
@@ -238,19 +243,19 @@
       <header class="page-header">
         <div>
           <h1>月間タスク管理</h1>
-          <p class="subtitle">毎日のがんばりを記録して、お小遣いを確認しましょう。</p>
+          <p class="subtitle">毎日のがんばりを記録して、お小遣いを確認しよう！</p>
         </div>
         <div class="allowance-card" aria-live="polite">
-          <span class="allowance-label">今月のお小遣い</span>
+          <span id="allowance-label" class="allowance-label">選択月のお小遣い</span>
           <span id="allowance" class="allowance-amount">0円</span>
           <div class="allowance-details">
-            <span id="allowance-estimate">今月の見込み額 —円</span>
+            <span id="allowance-estimate">選択月の見込み額 —円</span>
             <span id="allowance-comparison">先月比 —</span>
           </div>
         </div>
       </header>
 
-      <section aria-label="月間タスク表">
+      <section aria-label="月間タスク表とデータ">
         <div class="month-bar">
           <div class="month-controls">
             <button id="previous-month" type="button" aria-label="前の月">‹ 前月</button>
@@ -260,13 +265,19 @@
           <div id="summary" class="summary" aria-live="polite"></div>
         </div>
 
+        <div class="view-controls" role="group" aria-label="表示切り替え">
+          <button id="show-table" class="secondary" type="button" aria-pressed="true">📝 タスク</button>
+          <button id="show-data" class="secondary" type="button" aria-pressed="false">📊 データ</button>
+        </div>
+
+        <div id="table-view" class="view">
         <div class="legend" aria-label="曜日と入力方法">
           <span class="legend-item"><span class="legend-swatch saturday" aria-hidden="true"></span>土曜日</span>
           <span class="legend-item"><span class="legend-swatch sunday" aria-hidden="true"></span>日曜日</span>
-          <span>マスを選択して実施状況を登録できます。○または回数1につき10円です。</span>
+          <span>マスを押して記録します。実施1回につき10円です。</span>
         </div>
 
-        <div class="table-scroll" tabindex="0" aria-label="横にスクロールできる月間タスク表">
+        <div class="table-scroll" aria-label="月間タスク表">
           <table id="task-table">
             <caption id="table-caption" class="visually-hidden"></caption>
             <thead id="table-head"></thead>
@@ -275,6 +286,14 @@
         </div>
         <div class="table-footer">
           <button id="open-add-task" class="primary" type="button">＋ タスク追加</button>
+        </div>
+        </div>
+
+        <div id="data-view" class="view" hidden>
+          <div class="chart-card">
+            <h3 id="chart-heading" class="chart-title">月別のタスク実施状況</h3>
+            <div id="chart-content"></div>
+          </div>
         </div>
       </section>
       <p id="storage-message" class="storage-message" role="alert" hidden>
@@ -287,10 +306,11 @@
         <h2 id="add-dialog-title">タスク追加</h2>
         <div class="dialog-fields">
           <label>大カテゴリ
-            <select id="category-select" required></select>
+            <input id="category-input" type="text" list="category-options" maxlength="30" required placeholder="例：おてつだい" />
+            <datalist id="category-options"></datalist>
           </label>
           <label>小カテゴリ
-            <select id="subcategory-select" required></select>
+            <input id="subcategory-input" type="text" maxlength="40" required placeholder="例：おさらあらい" />
           </label>
           <label>タスク種別
             <select id="type-select" required>
@@ -339,52 +359,66 @@
       const STORAGE_KEY = "monthly-task-tracker-v1";
       const LEGACY_STORAGE_KEY = "task-list-items-v3";
       const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
-      const categories = {
+      const DEFAULT_CATEGORIES = {
         さんすう: { けいさん: "boolean", ぶんしょう: "count", はってん: "boolean" },
         こくご: { おんどく: "boolean", どっかい: "count", かんじ: "boolean" },
         そのた: { せんたく: "boolean", ランニング: "boolean", おえかき: "boolean" },
       };
-      const categorySelect = document.getElementById("category-select");
-      const subcategorySelect = document.getElementById("subcategory-select");
+      const CATEGORY_COLORS = ["#ff8a65", "#5bb7d3", "#a78bdb", "#69bd87", "#f2b84b", "#ed7da8", "#7389e8", "#9aa64c"];
+      const categoryInput = document.getElementById("category-input");
+      const subcategoryInput = document.getElementById("subcategory-input");
       const typeSelect = document.getElementById("type-select");
       const addDialog = document.getElementById("add-dialog");
       const valueDialog = document.getElementById("value-dialog");
       const monthTitle = document.getElementById("month-title");
-      const monthControls = document.querySelector(".month-controls");
       const tableHead = document.getElementById("table-head");
       const tableBody = document.getElementById("table-body");
       const summary = document.getElementById("summary");
       const storageMessage = document.getElementById("storage-message");
       let state = loadState();
+      let categories = state.categories;
       let editingCell = null;
 
-      categorySelect.innerHTML = Object.keys(categories)
-        .map((category) => `<option value="${category}">${category}</option>`).join("");
-      updateSubcategories();
+      updateCategoryOptions();
 
       document.getElementById("open-add-task").addEventListener("click", () => {
-        updateSubcategories();
+        categoryInput.value = "";
+        subcategoryInput.value = "";
+        typeSelect.value = "boolean";
+        updateCategoryOptions();
+        updateTaskType();
         addDialog.showModal();
       });
       document.getElementById("cancel-add").addEventListener("click", () => addDialog.close());
-      categorySelect.addEventListener("change", updateSubcategories);
-      subcategorySelect.addEventListener("change", updateTaskType);
+      typeSelect.addEventListener("change", updateTaskType);
+      categoryInput.addEventListener("input", () => categoryInput.setCustomValidity(""));
+      subcategoryInput.addEventListener("input", () => subcategoryInput.setCustomValidity(""));
       document.getElementById("previous-month").addEventListener("click", () => shiftMonth(-1));
       document.getElementById("next-month").addEventListener("click", () => shiftMonth(1));
+      document.getElementById("show-table").addEventListener("click", () => switchView("table"));
+      document.getElementById("show-data").addEventListener("click", () => switchView("data"));
 
       document.getElementById("add-form").addEventListener("submit", (event) => {
         event.preventDefault();
-        const category = categorySelect.value;
-        const subcategory = subcategorySelect.value;
-        if (!categories[category]?.[subcategory]) return;
-        if (state.tasks.some((task) => task.category === category && task.subcategory === subcategory)) return;
+        const category = categoryInput.value.trim();
+        const subcategory = subcategoryInput.value.trim();
+        const type = typeSelect.value;
+        if (!category || !subcategory || !["boolean", "count"].includes(type)) return;
+        if (state.tasks.some((task) => task.category === category && task.subcategory === subcategory)) {
+          subcategoryInput.setCustomValidity("この小カテゴリはすでに追加されています。");
+          subcategoryInput.reportValidity();
+          return;
+        }
 
+        if (!categories[category]) categories[category] = Object.create(null);
+        categories[category][subcategory] = type;
         state.tasks.push({
           id: createId(),
           category,
           subcategory,
-          type: categories[category][subcategory],
+          type,
         });
+        updateCategoryOptions();
         persistState();
         addDialog.close();
         render();
@@ -456,32 +490,24 @@
         render();
       });
 
-      function updateSubcategories() {
-        const category = categorySelect.value || Object.keys(categories)[0];
-        const existing = new Set(state.tasks.filter((task) => task.category === category).map((task) => task.subcategory));
-        const available = Object.keys(categories[category]).filter((name) => !existing.has(name));
-        subcategorySelect.innerHTML = available.length
-          ? available.map((name) => `<option value="${name}">${name}</option>`).join("")
-          : `<option value="">追加できる小カテゴリはありません</option>`;
-        subcategorySelect.disabled = available.length === 0;
-        document.getElementById("submit-add").disabled = available.length === 0;
+      function updateCategoryOptions() {
+        document.getElementById("category-options").innerHTML = Object.keys(categories)
+          .map((category) => `<option value="${escapeHtml(category)}"></option>`).join("");
         updateTaskType();
       }
 
       function updateTaskType() {
-        const type = categories[categorySelect.value]?.[subcategorySelect.value];
-        if (!type) {
-          typeSelect.value = "boolean";
-          typeSelect.disabled = true;
-          document.getElementById("type-hint").textContent = "この大カテゴリに追加できる小カテゴリはありません。";
-          return;
-        }
-        typeSelect.disabled = false;
-        typeSelect.value = type;
-        typeSelect.querySelector('[value="boolean"]').disabled = type !== "boolean";
-        typeSelect.querySelector('[value="count"]').disabled = type !== "count";
         document.getElementById("type-hint").textContent =
-          type === "boolean" ? "この小カテゴリは「やった／やってない」で記録します。" : "この小カテゴリは実施した回数を数字で記録します。";
+          typeSelect.value === "boolean" ? "「やった／やってない」で記録します。" : "実施した回数を数字で記録します。";
+      }
+
+      function switchView(view) {
+        const showData = view === "data";
+        document.getElementById("table-view").hidden = showData;
+        document.getElementById("data-view").hidden = !showData;
+        document.getElementById("show-table").setAttribute("aria-pressed", String(!showData));
+        document.getElementById("show-data").setAttribute("aria-pressed", String(showData));
+        render();
       }
 
       function openValueDialog(task, date) {
@@ -510,17 +536,36 @@
 
           const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
           if (legacy !== null) {
-            const migrated = normalizeState({ tasks: JSON.parse(legacy), completed: {} });
+            const legacyTasks = JSON.parse(legacy);
+            const migrated = normalizeState({
+              tasks: [...createDefaultTasks(), ...(Array.isArray(legacyTasks) ? legacyTasks : [])],
+              completed: {},
+            });
             localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
             return migrated;
           }
         } catch (error) {
           console.warn("保存済みのタスクを読み込めませんでした。", error);
         }
-        return { tasks: [], values: {} };
+        return normalizeState({ tasks: createDefaultTasks(), values: {} });
       }
 
       function normalizeState(source) {
+        const definitions = Object.create(null);
+        Object.entries(DEFAULT_CATEGORIES).forEach(([category, subcategories]) => {
+          definitions[category] = Object.assign(Object.create(null), subcategories);
+        });
+        if (source?.categories && typeof source.categories === "object" && !Array.isArray(source.categories)) {
+          Object.entries(source.categories).forEach(([rawCategory, subcategories]) => {
+            const category = rawCategory.trim();
+            if (!category || !subcategories || typeof subcategories !== "object" || Array.isArray(subcategories)) return;
+            if (!definitions[category]) definitions[category] = Object.create(null);
+            Object.entries(subcategories).forEach(([rawSubcategory, type]) => {
+              const subcategory = rawSubcategory.trim();
+              if (subcategory && (type === "boolean" || type === "count")) definitions[category][subcategory] = type;
+            });
+          });
+        }
         const tasks = (Array.isArray(source?.tasks) ? source.tasks : [])
           .map((task, index) => {
             if (typeof task === "string") {
@@ -528,13 +573,14 @@
             }
             const category = String(task?.category ?? "そのた");
             const subcategory = String(task?.subcategory ?? task?.name ?? "").trim();
-            const validCategory = categories[category] ? category : "そのた";
-            const validSubcategory = categories[validCategory][subcategory] ? subcategory : "";
+            const type = task?.type === "count" ? "count" : "boolean";
+            if (!definitions[category]) definitions[category] = Object.create(null);
+            if (subcategory && !definitions[category][subcategory]) definitions[category][subcategory] = type;
             return {
               id: String(task?.id ?? `task-${index}`),
-              category: validCategory,
-              subcategory: validSubcategory || subcategory,
-              type: categories[validCategory][validSubcategory] || (task?.type === "count" ? "count" : "boolean"),
+              category,
+              subcategory,
+              type: definitions[category][subcategory] || type,
             };
           })
           .filter((task) => task.subcategory);
@@ -556,7 +602,17 @@
             }
           });
         }
-        return { tasks, values };
+        return { tasks, values, categories: definitions };
+      }
+
+      function createDefaultTasks() {
+        return Object.entries(DEFAULT_CATEGORIES).flatMap(([category, subcategories]) =>
+          Object.entries(subcategories).map(([subcategory, type]) => ({
+            id: `default-${category}-${subcategory}`,
+            category,
+            subcategory,
+            type,
+          })));
       }
 
       function persistState() {
@@ -611,33 +667,22 @@
         summary.textContent = `${state.tasks.length}タスク · 記録 ${recordedCount}/${possibleCount}件`;
         monthTitle.textContent = monthLabel;
         document.getElementById("allowance").textContent = `${(earned * 10).toLocaleString("ja-JP")}円`;
+        document.getElementById("allowance-label").textContent = `${month}月のお小遣い`;
         renderAllowanceDetails(year, month, earned * 10, dates.length);
         document.getElementById("table-caption").textContent = `${monthLabel}のタスク実施状況`;
         tableHead.innerHTML = `<tr>
-          <th scope="col">カテゴリ / タスク</th>
+          <th scope="col">タスク</th>
           ${dates.map(renderDateHeading).join("")}
-          <th class="total-column" scope="col">タスク<br />小計</th>
+          <th class="total-column" scope="col">小計</th>
         </tr>`;
 
-        const categoryRows = Object.keys(categories).map((category) => {
-          const tasks = state.tasks.filter((task) => task.category === category);
-          const taskBySubcategory = new Map(tasks.map((task) => [task.subcategory, task]));
-          const renderedTaskIds = new Set();
-          const subcategoryRows = Object.keys(categories[category]).map((subcategory) => {
-            const task = taskBySubcategory.get(subcategory);
-            if (task) renderedTaskIds.add(task.id);
-            return task ? renderTaskRow(task, dates) : renderAvailableTaskRow(subcategory, dates.length);
-          }).join("");
-          const additionalTaskRows = tasks
-            .filter((task) => !renderedTaskIds.has(task.id))
-            .map((task) => renderTaskRow(task, dates)).join("");
-          return renderCategoryRow(category, dates.length) + subcategoryRows + additionalTaskRows;
-        }).join("");
+        const taskRows = state.tasks.map((task) => renderTaskRow(task, dates)).join("");
         if (state.tasks.length === 0) {
-          tableBody.innerHTML = `${categoryRows}<tr><td class="empty-cell" colspan="${dates.length + 2}">「タスク追加」から小カテゴリを追加すると、日ごとの実施状況を記録できます。</td></tr>`;
-          return;
+          tableBody.innerHTML = `<tr><td class="empty-cell" colspan="${dates.length + 2}">「タスク追加」から好きなタスクを追加できます。</td></tr>`;
+        } else {
+          tableBody.innerHTML = taskRows + renderTotals(dates);
         }
-        tableBody.innerHTML = categoryRows + renderTotals(dates);
+        renderMonthlyChart(year, month);
       }
 
       function renderAllowanceDetails(year, month, earned, daysInMonth) {
@@ -647,14 +692,17 @@
         const elapsedDays = selected < current ? daysInMonth : selected.getTime() === current.getTime() ? now.getDate() : 0;
         const estimate = elapsedDays ? Math.round((earned / elapsedDays) * daysInMonth) : null;
         document.getElementById("allowance-estimate").textContent =
-          `今月の見込み額 ${estimate === null ? "—" : `${estimate.toLocaleString("ja-JP")}円`}`;
+          `選択月の見込み額 ${estimate === null ? "—" : `${estimate.toLocaleString("ja-JP")}円`}`;
 
         const previousMonth = new Date(year, month - 2, 1);
         const previousAllowance = calculateMonthAllowance(previousMonth.getFullYear(), previousMonth.getMonth() + 1);
         const difference = earned - previousAllowance;
         const formattedDifference = `${difference > 0 ? "+" : ""}${difference.toLocaleString("ja-JP")}円`;
+        const percentage = previousAllowance === 0
+          ? (earned === 0 ? "0%" : "算出不可")
+          : `${difference > 0 ? "+" : ""}${Math.round((difference / previousAllowance) * 100)}%`;
         document.getElementById("allowance-comparison").textContent =
-          `先月比 ${formattedDifference}（先月 ${previousAllowance.toLocaleString("ja-JP")}円）`;
+          `先月比 ${formattedDifference}・${percentage}（先月 ${previousAllowance.toLocaleString("ja-JP")}円）`;
       }
 
       function calculateMonthAllowance(year, month) {
@@ -668,13 +716,6 @@
         return earned * 10;
       }
 
-      function renderCategoryRow(category, dayCount) {
-        return `<tr class="category-row">
-          <th scope="row"><span class="category-name"><span class="category-marker" aria-hidden="true"></span>${escapeHtml(category)}</span></th>
-          <td colspan="${dayCount + 1}" aria-hidden="true"></td>
-        </tr>`;
-      }
-
       function renderDateHeading(date) {
         const weekday = date.getDay();
         const className = weekday === 6 ? "saturday" : weekday === 0 ? "sunday" : "";
@@ -686,23 +727,13 @@
 
       function renderTaskRow(task, dates) {
         const taskTotal = dates.reduce((total, date) => total + valueFor(formatDate(date), task.id), 0);
-        return `<tr>
+        return `<tr style="--category-color:${categoryColor(task.category)}">
           <th scope="row"><div class="task-row-heading"><div>
-            <span class="task-name">${escapeHtml(task.subcategory)}</span>
+            <span class="task-name"><span class="category-tag">${escapeHtml(task.category)}</span>${escapeHtml(task.subcategory)}</span>
           </div><button class="delete-task" data-delete-id="${escapeHtml(task.id)}" type="button"
             aria-label="${escapeHtml(task.subcategory)}を削除" title="タスクを削除">×</button></div></th>
           ${dates.map((date) => renderCell(task, date)).join("")}
           <td class="total-column">${taskTotal}</td>
-        </tr>`;
-      }
-
-      function renderAvailableTaskRow(subcategory, dayCount) {
-        return `<tr class="inactive-task-row">
-          <th scope="row"><div class="task-row-heading">
-            <span class="task-name">${escapeHtml(subcategory)}</span><span class="task-unavailable">未追加</span>
-          </div></th>
-          ${Array.from({ length: dayCount }, () => "<td></td>").join("")}
-          <td class="total-column">—</td>
         </tr>`;
       }
 
@@ -729,6 +760,84 @@
           ${dailyTotals.map((value) => `<td>${value}</td>`).join("")}
           <td class="total-column grand-total">${grandTotal}</td>
         </tr>`;
+      }
+
+      function categoryColor(category) {
+        const index = Object.keys(categories).indexOf(category);
+        return CATEGORY_COLORS[(index < 0 ? 0 : index) % CATEGORY_COLORS.length];
+      }
+
+      function renderMonthlyChart(year, month) {
+        const chartContent = document.getElementById("chart-content");
+        const lastMonth = new Date(year, month - 1, 1);
+        const months = Array.from({ length: 12 }, (_, index) =>
+          new Date(lastMonth.getFullYear(), lastMonth.getMonth() - 11 + index, 1));
+        document.getElementById("chart-heading").textContent =
+          `月別のタスク実施状況（${monthKey(months[0])}〜${monthKey(lastMonth)}）`;
+        if (state.tasks.length === 0) {
+          chartContent.innerHTML = '<p class="chart-empty">タスクを追加すると、月ごとの実施状況を見られます。</p>';
+          return;
+        }
+
+        const valuesByMonth = months.map((monthDate) => {
+          const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+          return state.tasks.map((task) => {
+            let total = 0;
+            for (let day = 1; day <= daysInMonth; day += 1) {
+              total += valueFor(formatDate(new Date(monthDate.getFullYear(), monthDate.getMonth(), day)), task.id);
+            }
+            return total;
+          });
+        });
+        const monthTotals = valuesByMonth.map((values) => values.reduce((sum, value) => sum + value, 0));
+        const maximum = Math.max(1, ...monthTotals);
+        const width = 900;
+        const height = 320;
+        const left = 42;
+        const right = 12;
+        const top = 20;
+        const bottom = 42;
+        const plotWidth = width - left - right;
+        const plotHeight = height - top - bottom;
+        const groupWidth = plotWidth / months.length;
+        const barWidth = Math.min(42, groupWidth * 0.62);
+        const ticks = [...new Set([0, Math.round(maximum / 2), maximum])];
+        const grid = ticks.map((tick) => {
+          const y = top + plotHeight - (tick / maximum) * plotHeight;
+          return `<line x1="${left}" y1="${y}" x2="${width - right}" y2="${y}" stroke="#eadfef" />
+            <text x="${left - 8}" y="${y + 4}" text-anchor="end" fill="#817997" font-size="11">${tick}</text>`;
+        }).join("");
+        const bars = valuesByMonth.map((values, monthIndex) => {
+          const x = left + groupWidth * monthIndex + (groupWidth - barWidth) / 2;
+          let y = top + plotHeight;
+          const segments = values.map((value, taskIndex) => {
+            const segmentHeight = (value / maximum) * plotHeight;
+            y -= segmentHeight;
+            if (!value) return "";
+            const task = state.tasks[taskIndex];
+            const opacity = 0.58 + (taskIndex % 4) * 0.14;
+            return `<rect x="${x}" y="${y}" width="${barWidth}" height="${segmentHeight}" fill="${categoryColor(task.category)}"
+              fill-opacity="${opacity}" stroke="#fffdf8" stroke-width="1">
+              <title>${escapeHtml(task.category)}・${escapeHtml(task.subcategory)}: ${value}</title>
+            </rect>`;
+          }).join("");
+          const label = `${months[monthIndex].getMonth() + 1}月`;
+          return `<g>${segments}
+            <text x="${x + barWidth / 2}" y="${Math.max(top - 4, y - 5)}" text-anchor="middle" fill="#655a7b" font-size="10">${monthTotals[monthIndex]}</text>
+            <text x="${x + barWidth / 2}" y="${height - 14}" text-anchor="middle" fill="#817997" font-size="11">${label}</text>
+          </g>`;
+        }).join("");
+        const legend = state.tasks.map((task, index) => {
+          const opacity = 0.58 + (index % 4) * 0.14;
+          return `<li style="--category-color:${categoryColor(task.category)};--task-opacity:${opacity}">
+            <span class="chart-swatch" aria-hidden="true"></span>${escapeHtml(task.category)}・${escapeHtml(task.subcategory)}</li>`;
+        }).join("");
+        chartContent.innerHTML = `<svg id="monthly-chart" viewBox="0 0 ${width} ${height}" role="img"
+          aria-labelledby="chart-svg-title chart-svg-description" preserveAspectRatio="xMidYMid meet">
+          <title id="chart-svg-title">${escapeHtml(document.getElementById("chart-heading").textContent)}</title>
+          <desc id="chart-svg-description">縦軸は実施数、横軸は月です。棒グラフはタスクごとの実施数を積み上げ、色は大カテゴリを表します。</desc>
+          ${grid}${bars}
+        </svg><ul class="chart-legend" aria-label="タスクと大カテゴリの色">${legend}</ul>`;
       }
 
       function escapeHtml(value) {
