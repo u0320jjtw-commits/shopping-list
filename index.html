@@ -99,13 +99,6 @@
       }
       .month-title { min-width: 150px; margin: 0; font-size: 1.25rem; text-align: center; }
       .summary { grid-column: 3; justify-self: end; color: var(--muted); font-size: 0.95rem; }
-      .category-overview { margin: 0 0 20px; }
-      .category-overview h2 { margin: 0 0 10px; font-size: 1rem; }
-      .category-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-      .category-card { padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: #f8fafc; }
-      .category-card h3 { margin: 0 0 10px; font-size: 0.95rem; }
-      .subcategory-list { display: flex; flex-wrap: wrap; gap: 7px; margin: 0; padding: 0; list-style: none; }
-      .subcategory-list li { padding: 5px 9px; border: 1px solid #dbeafe; border-radius: 999px; background: #eff6ff; color: #1e40af; font-size: 0.84rem; }
       .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 12px; color: var(--muted); font-size: 0.85rem; }
       .legend-item { display: inline-flex; align-items: center; gap: 6px; }
       .legend-swatch { width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 4px; }
@@ -153,8 +146,29 @@
       .weekday { display: block; margin-top: 3px; color: var(--muted); font-size: 0.74rem; font-weight: 400; }
       .today .date-number { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
       .task-row-heading { justify-content: space-between; gap: 10px; }
-      .task-name { overflow-wrap: anywhere; font-weight: 600; }
-      .task-category { display: block; margin-bottom: 3px; color: var(--muted); font-size: 0.76rem; }
+      .category-row th { background: #eaf0f7; font-weight: 700; }
+      .category-row td { height: 38px; padding: 0; background: #f8fafc; }
+      .category-name { display: flex; align-items: center; gap: 9px; }
+      .category-marker { width: 8px; height: 8px; border-radius: 2px; background: var(--accent); }
+      .task-name {
+        position: relative;
+        display: block;
+        margin-left: 18px;
+        padding-left: 13px;
+        overflow-wrap: anywhere;
+        font-weight: 600;
+      }
+      .task-name::before {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 9px;
+        border-top: 1px solid #94a3b8;
+        content: "";
+      }
+      .inactive-task-row th { color: var(--muted); }
+      .inactive-task-row td { background: #fcfcfd; }
+      .task-unavailable { margin-left: auto; color: var(--muted); font-size: 0.74rem; font-weight: 400; }
       .delete-task { flex: 0 0 auto; min-height: 32px; padding: 3px 8px; border: 0; background: transparent; color: #b91c1c; font-size: 1.2rem; }
       .cell-button {
         display: inline-grid;
@@ -215,7 +229,6 @@
         .month-controls { width: 100%; justify-content: center; gap: 5px; }
         .month-controls button { padding: 8px; }
         .month-title { min-width: 0; font-size: 1.08rem; }
-        .category-list { grid-template-columns: 1fr; gap: 8px; }
         th:first-child, td:first-child { width: 180px; min-width: 180px; }
       }
     </style>
@@ -238,10 +251,6 @@
       </header>
 
       <section aria-label="月間タスク表">
-        <section class="category-overview" aria-labelledby="category-overview-title">
-          <h2 id="category-overview-title">カテゴリ一覧</h2>
-          <div id="category-list" class="category-list"></div>
-        </section>
         <div class="month-bar">
           <div class="month-controls">
             <button id="previous-month" type="button" aria-label="前の月">‹ 前月</button>
@@ -603,19 +612,32 @@
         monthTitle.textContent = monthLabel;
         document.getElementById("allowance").textContent = `${(earned * 10).toLocaleString("ja-JP")}円`;
         renderAllowanceDetails(year, month, earned * 10, dates.length);
-        renderCategoryOverview();
         document.getElementById("table-caption").textContent = `${monthLabel}のタスク実施状況`;
         tableHead.innerHTML = `<tr>
-          <th scope="col">大カテゴリ / 小カテゴリ</th>
+          <th scope="col">カテゴリ / タスク</th>
           ${dates.map(renderDateHeading).join("")}
           <th class="total-column" scope="col">タスク<br />小計</th>
         </tr>`;
 
+        const categoryRows = Object.keys(categories).map((category) => {
+          const tasks = state.tasks.filter((task) => task.category === category);
+          const taskBySubcategory = new Map(tasks.map((task) => [task.subcategory, task]));
+          const renderedTaskIds = new Set();
+          const subcategoryRows = Object.keys(categories[category]).map((subcategory) => {
+            const task = taskBySubcategory.get(subcategory);
+            if (task) renderedTaskIds.add(task.id);
+            return task ? renderTaskRow(task, dates) : renderAvailableTaskRow(subcategory, dates.length);
+          }).join("");
+          const additionalTaskRows = tasks
+            .filter((task) => !renderedTaskIds.has(task.id))
+            .map((task) => renderTaskRow(task, dates)).join("");
+          return renderCategoryRow(category, dates.length) + subcategoryRows + additionalTaskRows;
+        }).join("");
         if (state.tasks.length === 0) {
-          tableBody.innerHTML = `<tr><td class="empty-cell" colspan="${dates.length + 2}">「タスク追加」から小カテゴリを追加すると、日ごとの実施状況を記録できます。</td></tr>`;
+          tableBody.innerHTML = `${categoryRows}<tr><td class="empty-cell" colspan="${dates.length + 2}">「タスク追加」から小カテゴリを追加すると、日ごとの実施状況を記録できます。</td></tr>`;
           return;
         }
-        tableBody.innerHTML = state.tasks.map((task) => renderTaskRow(task, dates)).join("") + renderTotals(dates);
+        tableBody.innerHTML = categoryRows + renderTotals(dates);
       }
 
       function renderAllowanceDetails(year, month, earned, daysInMonth) {
@@ -646,14 +668,11 @@
         return earned * 10;
       }
 
-      function renderCategoryOverview() {
-        document.getElementById("category-list").innerHTML = Object.entries(categories).map(([category, subcategories]) => `
-          <section class="category-card" aria-label="${escapeHtml(category)}">
-            <h3>${escapeHtml(category)}</h3>
-            <ul class="subcategory-list">
-              ${Object.keys(subcategories).map((subcategory) => `<li>${escapeHtml(subcategory)}</li>`).join("")}
-            </ul>
-          </section>`).join("");
+      function renderCategoryRow(category, dayCount) {
+        return `<tr class="category-row">
+          <th scope="row"><span class="category-name"><span class="category-marker" aria-hidden="true"></span>${escapeHtml(category)}</span></th>
+          <td colspan="${dayCount + 1}" aria-hidden="true"></td>
+        </tr>`;
       }
 
       function renderDateHeading(date) {
@@ -669,12 +688,21 @@
         const taskTotal = dates.reduce((total, date) => total + valueFor(formatDate(date), task.id), 0);
         return `<tr>
           <th scope="row"><div class="task-row-heading"><div>
-            <span class="task-category">${escapeHtml(task.category)}</span>
             <span class="task-name">${escapeHtml(task.subcategory)}</span>
           </div><button class="delete-task" data-delete-id="${escapeHtml(task.id)}" type="button"
             aria-label="${escapeHtml(task.subcategory)}を削除" title="タスクを削除">×</button></div></th>
           ${dates.map((date) => renderCell(task, date)).join("")}
           <td class="total-column">${taskTotal}</td>
+        </tr>`;
+      }
+
+      function renderAvailableTaskRow(subcategory, dayCount) {
+        return `<tr class="inactive-task-row">
+          <th scope="row"><div class="task-row-heading">
+            <span class="task-name">${escapeHtml(subcategory)}</span><span class="task-unavailable">未追加</span>
+          </div></th>
+          ${Array.from({ length: dayCount }, () => "<td></td>").join("")}
+          <td class="total-column">—</td>
         </tr>`;
       }
 
